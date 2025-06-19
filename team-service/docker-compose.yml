@@ -1,0 +1,50 @@
+services:
+  team-app: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: team_service
+    restart: always
+    ports:
+      - "${API_PORT}:5050"
+    networks:
+      - my-network
+    depends_on:
+      - db
+  db:
+    image: postgres
+    container_name: team_pgdb
+    restart: always
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+    networks:
+      - my-network
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: team_pgadmin4
+    restart: unless-stopped
+    ports:
+      - "${PGADMIN_PORT}:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - my-network
+    depends_on:
+      - db
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
+
+networks: 
+  my-network:
+    driver: bridge
+    external: true
