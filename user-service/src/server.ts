@@ -1,29 +1,39 @@
 import dotenv from 'dotenv';
 dotenv.config();
+import { initDB } from './init/initDB';
 
-import express, { Express, Request, Response, NextFunction } from "express";
-// import httpProxy from "http-proxy";
-// import cors from "cors";
-import { setupProxies } from './proxy';
-import { ROUTES } from './routes';
+
+import express, { Express, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import { setupLogging } from './logging';
+import userRoutes from './routes/user';
 
 const app: Express = express();
+const router = app.router;
 const port = process.env.API_PORT || 5555;
-// const apiProxy = httpProxy.createProxyServer();
 
-// app.use(cors());
+setupLogging(app);
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-    res.send('/ of Users API Gateway');
-})
+app.use(cors());
+app.use(express.json());
 
-setupProxies(app, ROUTES);
-
-app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
-  console.error(err.stack); 
-  res.status(500).send('Something broke!'); 
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`Received request: ${req.method} ${req.originalUrl}`);
+  next();
 });
 
-app.listen(5555, "0.0.0.0",  () => {
-    console.log(`API Gateway is running at http://localhost:${port}`);
+app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
+
+router.use('/', userRoutes);
+
+const startServer = async () => {
+  await initDB();
+  app.listen(5555, '0.0.0.0', () => {
+    console.log(`Running on http://0.0.0.0:${port}`);
+  });
+};
+
+startServer();

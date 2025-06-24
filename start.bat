@@ -3,6 +3,7 @@ docker network create --driver bridge my-network
 
 echo Launching user service
 cd user-service
+node generateServerJson.js
 docker-compose up -d
 cd ..
 
