@@ -48,7 +48,7 @@ TypeScript pour les même raison que le Frontend.
 
 ## Lancement du projet
 
-### Etape 1: 
+### Etape 1:
 
 Démarrer Docker
 
@@ -71,13 +71,14 @@ cd front
 ### Etape 4:
 
 Executer l'installateur npm a l'aide de la commande
+
 ```
 npm i
 ```
 
-### Etape 5: 
+### Etape 5:
 
-Lancer le rendu front avec 
+Lancer le rendu front avec
 
 ```
 npm run dev
@@ -87,9 +88,14 @@ npm run dev
 
 Sur docker, Aller dans les containers -> Selectionner "api-gateway" -> Aller dans la section "port" et cliquer sur le lien
 
-### Et voila ! 
+### Et voila !
 
 vous avez lancé BTP ! félicitations ! :smiley:
 
+## Notes
+
+### sécurité
+
+Par soucis pratique d'utilisation lors de la récupération du projet, nous avons décidé d'intégré le .env au git. Bien sur dans un vrai projet destiné a etre utilisé par le grand public ça n'arriverai pas avec
 
 GURY Timothé / SADY Yann
