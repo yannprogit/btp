@@ -1,16 +1,7 @@
 import { signToken } from '../utils/jwt.js';
+import { User } from '../models/user';
 import bcrypt from 'bcrypt';
 import pool from '../config/db';
-
-interface NewUser {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface User extends NewUser {
-  id: string;
-}
 
 export const signup = async ({ name, email, password }: Omit<User, 'id'>) => {
   try {

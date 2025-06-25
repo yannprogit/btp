@@ -14,8 +14,8 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
-  if (!email) {
-    return res.status(400).json({ message: 'Email is required' });
+  if (!email || !name || !password) {
+    res.status(400).json({ message: 'Fields are missing' });
   }
 
   const newUser = await userService.createUser({ name, email, password });
@@ -23,10 +23,30 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const updated = await userService.updateUser(req.params.id, req.body);
-  if (!updated) res.status(404).json({ message: 'User not found' });
-  res.json(updated);
+  const { name, email, newPassword, actualPassword } = req.body;
+
+  if (!actualPassword) {
+    res.status(400).json({ message: 'Actual password is required' });
+  }
+
+  if (!name && !email && !newPassword) {
+    res.status(400).json({ message: 'At least one field (name, email, newPassword) is required' });
+  }
+
+  const success = await userService.updateUser(req.params.id, {
+    name,
+    email,
+    newPassword,
+    actualPassword,
+  });
+
+  if (!success) {
+    res.status(403).json({ message: 'Invalid credentials' });
+  }
+
+  res.status(204).send();
 };
+
 
 export const deleteUser = async (req: Request, res: Response) => {
   const success = await userService.deleteUser(req.params.id);
