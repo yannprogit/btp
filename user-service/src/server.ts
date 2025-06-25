@@ -7,6 +7,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { setupLogging } from './logging';
 import userRoutes from './routes/user';
+import authRoutes from './routes/auth';
 
 const app: Express = express();
 const router = app.router;
@@ -28,6 +29,7 @@ app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
 });
 
 router.use('/', userRoutes);
+router.use('/auth', authRoutes);
 
 const startServer = async () => {
   await initDB();

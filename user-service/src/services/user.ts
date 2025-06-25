@@ -6,7 +6,7 @@ export const getAllUsers = async (): Promise<User[]> => {
     const result = await database.query('SELECT * FROM users');
     return result.rows as User[];
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Get all users error: ', err);
     return [];
   }
 };
