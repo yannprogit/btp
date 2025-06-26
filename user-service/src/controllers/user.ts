@@ -50,6 +50,9 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   const success = await userService.deleteUser(req.params.id);
-  if (!success) res.status(404).json({ message: 'User not found' });
+
+  if (!success) { 
+    res.status(404).json({ message: 'User not found' });
+  }
   res.status(204).send();
 };
