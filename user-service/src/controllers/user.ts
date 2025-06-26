@@ -12,6 +12,23 @@ export const getUserById = async (req: Request, res: Response) => {
   res.json(user);
 };
 
+export const getMe = async (req: Request, res: Response) => {
+  const userId = (req as any).user?.id;
+
+  try {
+    const user = await userService.getUserById(userId);
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error('Error in getMe: ', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
   if (!email || !name || !password) {
