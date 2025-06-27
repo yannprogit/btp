@@ -40,10 +40,10 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { name, email, newPassword, actualPassword } = req.body;
+  const { name, email, newPassword, currentPassword } = req.body;
 
-  if (!actualPassword) {
-    res.status(400).json({ message: 'Actual password is required' });
+  if (!currentPassword) {
+    res.status(400).json({ message: 'Current password is required' });
   }
 
   if (!name && !email && !newPassword) {
@@ -54,7 +54,7 @@ export const updateUser = async (req: Request, res: Response) => {
     name,
     email,
     newPassword,
-    actualPassword,
+    currentPassword,
   });
 
   if (!success) {

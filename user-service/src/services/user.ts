@@ -34,7 +34,7 @@ export const updateUser = async (
     name?: string;
     email?: string;
     newPassword?: string;
-    actualPassword: string;
+    currentPassword: string;
   }
 ): Promise<boolean> => {
   const existing = await database.query('SELECT password FROM users WHERE id = $1', [id]);
@@ -43,7 +43,7 @@ export const updateUser = async (
     return false;
   }
 
-  const validPassword = await bcrypt.compare(updates.actualPassword, current.password);
+  const validPassword = await bcrypt.compare(updates.currentPassword, current.password);
   if (!validPassword) {
     return false;
   }
