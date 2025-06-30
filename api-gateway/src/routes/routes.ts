@@ -36,6 +36,15 @@ const ROUTES: Route[] = [
             target: process.env.TEAMS_SERVICE_URL || "http://team-app:5050",
             changeOrigin: true,
         }
+    },
+    {
+        url: '/pokeapi',
+        auth: false,
+        creditCheck: false,
+        proxy: {
+            target: process.env.POKEAPI_SERVICE_URL || "http://pokeapi-app:6000",
+            changeOrigin: true,
+        }
     }
 ];
 
