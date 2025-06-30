@@ -18,7 +18,7 @@ function Header() {
       </div>
       <div className="absolute mr-4">
         <a
-          href="/"
+          href="/auth"
           className="text-blue-600 font-medium hover:underline"
         >
           Login
