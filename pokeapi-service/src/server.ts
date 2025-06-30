@@ -1,16 +1,16 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { initDB } from './init/initDB';
 
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { setupLogging } from './logging';
-import teamRoutes from './routes/team';
+import pokemonRoutes from './routes/pokemon';
+import moveRoutes from './routes/move';
 
 const app: Express = express();
 const router = app.router;
-const port = process.env.API_PORT || 5050;
+const port = process.env.API_PORT || 6000;
 
 setupLogging(app);
 
@@ -27,13 +27,9 @@ app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
   res.status(500).send('Something broke!');
 });
 
-router.use('/', teamRoutes);
+router.use('/pokemons', pokemonRoutes);
+router.use('/moves', moveRoutes);
 
-const startServer = async () => {
-  await initDB();
-  app.listen(5050, '0.0.0.0', () => {
-    console.log(`Running on http://0.0.0.0:${port}`);
-  });
-};
-
-startServer();
+app.listen(6000, '0.0.0.0', () => {
+  console.log(`Running on http://0.0.0.0:${port}`);
+});

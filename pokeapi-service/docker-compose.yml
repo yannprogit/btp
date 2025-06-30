@@ -1,0 +1,16 @@
+services:
+  pokeapi-app: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pokeapi_service
+    restart: always
+    ports:
+      - "${API_PORT}:6000"
+    networks:
+      - my-network
+
+networks: 
+  my-network:
+    driver: bridge
+    external: true

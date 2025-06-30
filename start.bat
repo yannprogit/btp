@@ -11,6 +11,11 @@ cd team-service
 docker-compose up -d
 cd ..
 
+echo Launching pokeapi service
+cd pokeapi-service
+docker-compose up -d
+cd ..
+
 echo Launching API Gateway
 cd api-gateway
 docker-compose up -d
