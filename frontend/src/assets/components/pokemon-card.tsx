@@ -10,10 +10,10 @@ const PokemonCard = ({
 }) => {
   return (
     <div
-      className="pokemon-card rounded-xl shadow p-4 cursor-pointer"
+      className="rounded-xl shadow p-4 cursor-pointer"
       onClick={onClick}
     >
-        <img className="h-45 object-cover mx-auto" src={pokemon.image} alt={pokemon.name}></img>
+        <img className="h-45 object-cover mx-auto" src={pokemon.sprite} alt={pokemon.name}></img>
       <div className="p-4">
         <p className="text-lg font-semibold text-gray-800 text-center">
         {pokemon.name}
@@ -22,10 +22,10 @@ const PokemonCard = ({
         {pokemon.types.map((type:PokemonType) => (
         <img
           key={type.name}
-          src={type.icon}
+          src={`/assets/images/types/${type.name}.png`}
           alt={type.name}
           title={type.name}
-          className="w-10 mx-1"
+          className="w-12 mx-1"
         />
         ))}
         </div>

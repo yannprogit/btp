@@ -1,101 +1,145 @@
 export type PokemonType = {
   name: string;
-  icon: string;
 };
 
 export type Pokemon = {
+  id: string
   name: string;
-  image: string;
+  sprite: string;
   types: PokemonType[];
+};
+
+export type Attack = {
+  name:string;
+  type:PokemonType;
+  damage:number;
+  accuracy:number;
+}
+
+export type PokemonInTeam = Pokemon & {
+  teamId: string;
 };
 
 export const pokemons: Pokemon[] = [
   {
+    id:"21",
     name: "Pikachu",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
     types: [
       {
-        name: "Electric",
-        icon: "https://www.serebii.net/pokedex-bw/type/electric.gif"
+        name: "electric",
       }
     ]
   },
   {
+    id:"22",
     name: "Bulbasaur",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
     types: [
       {
-        name: "Grass",
-        icon: "https://www.serebii.net/pokedex-bw/type/grass.gif"
+        name: "grass",
       },
       {
-        name: "Poison",
-        icon: "https://www.serebii.net/pokedex-bw/type/poison.gif"
+        name: "poison",
       }
     ]
   },
   {
+    id:"25",
     name: "Charmander",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
     types: [
       {
-        name: "Fire",
-        icon: "https://www.serebii.net/pokedex-bw/type/fire.gif"
+        name: "fire",
       }
     ]
   },
   {
+    id:"26",
     name: "Squirtle",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
     types: [
       {
-        name: "Water",
-        icon: "https://www.serebii.net/pokedex-bw/type/water.gif"
+        name: "water",
       }
     ]
   },
   {
+    id:"28",
     name: "Jigglypuff",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png",
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png",
     types: [
       {
-        name: "Normal",
-        icon: "https://www.serebii.net/pokedex-bw/type/normal.gif"
+        name: "normal",
       },
       {
-        name: "Fairy",
-        icon: "https://www.serebii.net/pokedex-bw/type/fairy.gif"
+        name: "fairy",
       }
     ]
   },
   {
+    id:"36",
     name: "Meowth",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png",
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png",
     types: [
       {
-        name: "Normal",
-        icon: "https://www.serebii.net/pokedex-bw/type/normal.gif"
+        name: "normal",
       }
     ]
   },
   {
+    id:"78",
     name: "Psyduck",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
     types: [
       {
-        name: "Water",
-        icon: "https://www.serebii.net/pokedex-bw/type/water.gif"
+        name: "water",
       }
     ]
   },
   {
+    id:"48",
     name: "Snorlax",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png",
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png",
     types: [
       {
-        name: "Normal",
-        icon: "https://www.serebii.net/pokedex-bw/type/normal.gif"
+        name: "normal",
       }
     ]
+  }
+];
+
+export const attacks:Attack[] = [
+  {
+    name: "Flammeche",
+    type: {
+        name: "fire",
+      },
+    damage: 40,
+    accuracy: 100
+  },
+  {
+    name: "Tonnerre",
+    type: {
+        name: "electric",
+      },
+    damage: 90,
+    accuracy: 100
+  },
+  {
+    name: "Lance-Flammes",
+    type: {
+        name: "fire",
+      },
+    damage: 90,
+    accuracy: 100
+  },
+  {
+    name: "Dracogriffe",
+    type: {
+        name: "water",
+      },
+    damage: 80,
+    accuracy: 100
   }
 ];
