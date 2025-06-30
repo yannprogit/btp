@@ -17,5 +17,11 @@ docker-compose down
 docker rmi user-service-user-app
 cd ..
 
+echo Stopping pokeapi service
+cd pokeapi-service
+docker-compose down
+docker rmi pokeapi-service-pokeapi-app
+cd ..
+
 echo All services stopped !
 pause
