@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,6 +10,7 @@ const AuthPage = () => {
     password: "",
   });
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -31,9 +33,9 @@ const AuthPage = () => {
 
       const token = response.data.token;
       localStorage.setItem("token", token);
+      localStorage.setItem("userName", response.data.user.name);
 
-      alert("Connexion réussie !");
-      // Tu peux ici naviguer vers une autre page si besoin
+      navigate("/");
     } catch (err: any) {
       setError(err.response?.data?.message || "Erreur lors de la requête");
     }

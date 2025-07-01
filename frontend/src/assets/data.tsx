@@ -10,10 +10,13 @@ export type Pokemon = {
 };
 
 export type Attack = {
+  id:string;
   name:string;
-  type:PokemonType;
+  type:string;
   damage:number;
   accuracy:number;
+  description:string;
+  category:string;
 }
 
 export type PokemonInTeam = Pokemon & {
