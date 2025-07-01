@@ -2,69 +2,16 @@ import pool from '../config/db';
 import { Pokemon } from '../models/pokemon';
 import { Team } from '../models/team';
 
-export const getTeamsByUser = async (userId: string): Promise<Team[]> => {
+export const getTeamsByUser = async (userId: string): Promise<Omit<Team, 'userId' | 'pokemons'>[]> => {
   const teamRes = await pool.query(
     `SELECT id, name FROM teams WHERE userId = $1`,
     [userId]
   );
 
-  const teams: Team[] = [];
-
-  for (const teamRow of teamRes.rows) {
-    const pkmnRes = await pool.query(
-      `SELECT p.id, p.speciesId, p.name
-       FROM pokemon p
-       JOIN contain c ON c.pkmnId = p.id
-       WHERE c.teamId = $1`,
-      [teamRow.id]
-    );
-
-    const pokemons = [];
-
-    for (const pkmn of pkmnRes.rows) {
-      const typesRes = await pool.query(
-        `SELECT t.name
-         FROM has h
-         JOIN types t ON h.type = t.name
-         WHERE h.pkmnId = $1`,
-        [pkmn.id]
-      );
-
-      const movesRes = await pool.query(
-        `SELECT m.id, m.name, m.accuracy, m.damage, m.description, m.type as "typeName"
-         FROM owned o
-         JOIN moves m ON o.moveId = m.id
-         WHERE o.pkmnId = $1`,
-        [pkmn.id]
-      );
-
-      const moves = movesRes.rows.map(m => ({
-        id: m.id.toString(),
-        name: m.name,
-        accuracy: m.accuracy,
-        damage: m.damage,
-        description: m.description,
-        type: { name: m.typeName }
-      }));
-
-      pokemons.push({
-        id: pkmn.id.toString(),
-        speciesId: pkmn.speciesid.toString(),
-        name: pkmn.name,
-        types: typesRes.rows.map(t => ({ name: t.name })),
-        moves
-      });
-    }
-
-    teams.push({
-      id: teamRow.id.toString(),
-      name: teamRow.name,
-      userId,
-      pokemons
-    });
-  }
-
-  return teams;
+  return teamRes.rows.map(row => ({
+    id: row.id.toString(),
+    name: row.name
+  }));
 };
 
 export const getTeamById = async (teamId: string): Promise<Team> => {
@@ -79,7 +26,7 @@ export const getTeamById = async (teamId: string): Promise<Team> => {
   }
 
   const pkmnRes = await pool.query(
-    `SELECT p.id, p.speciesId, p.name
+    `SELECT p.id, p.speciesId, p.name, p.sprite
      FROM pokemon p
      JOIN contain c ON c.pkmnId = p.id
      WHERE c.teamId = $1`,
@@ -118,6 +65,7 @@ export const getTeamById = async (teamId: string): Promise<Team> => {
       id: pkmn.id,
       speciesId: pkmn.speciesid,
       name: pkmn.name,
+      sprite: pkmn.sprite,
       types: typesRes.rows,
       moves
     });
@@ -132,22 +80,22 @@ export const getTeamById = async (teamId: string): Promise<Team> => {
 };
 
 export const createTeam = async (team: Omit<Team, 'id'>): Promise<Team> => {
-  const teamResult = await pool.query(
+  const teamRes = await pool.query(
     `INSERT INTO teams (name, userId)
     VALUES ($1, $2)
     RETURNING id, name, userId`,
     [team.name, team.userId]
   );
-  const createdTeam = teamResult.rows[0];
+  const createdTeam = teamRes.rows[0];
 
   for (const pokemon of team.pokemons) {
-    const pokemonResult = await pool.query(
-      `INSERT INTO pokemon (speciesId, name)
-      VALUES ($1, $2)
+    const pokemonRes = await pool.query(
+      `INSERT INTO pokemon (speciesId, name, sprite)
+      VALUES ($1, $2, $3)
       RETURNING id`,
-      [pokemon.speciesId, pokemon.name]
+      [pokemon.speciesId, pokemon.name, pokemon.sprite]
     );
-    const pokemonId = pokemonResult.rows[0].id;
+    const pokemonId = pokemonRes.rows[0].id;
 
     await pool.query(
       `INSERT INTO contain (teamId, pkmnId)
@@ -172,7 +120,7 @@ export const createTeam = async (team: Omit<Team, 'id'>): Promise<Team> => {
         [move.type.name]
       );
 
-      const moveResult = await pool.query(
+      const moveRes = await pool.query(
         `INSERT INTO moves (name, type, description, accuracy, damage)
         VALUES ($1, $2, $3, $4, $5)
         ON CONFLICT (name, type) DO NOTHING
@@ -182,8 +130,8 @@ export const createTeam = async (team: Omit<Team, 'id'>): Promise<Team> => {
 
       let moveId: number;
 
-      if (moveResult.rows.length > 0) {
-        moveId = moveResult.rows[0].id;
+      if (moveRes.rows.length > 0) {
+        moveId = moveRes.rows[0].id;
       } else {
         const existingMove = await pool.query(
           `SELECT id FROM moves WHERE name = $1 AND type = $2`,
@@ -215,10 +163,10 @@ export const updateTeam = async (id: string, updates: { name: string, pokemons: 
 
     if (!pkmnId) {
       const insertRes = await pool.query(
-        `INSERT INTO pokemon (speciesId, name)
-         VALUES ($1, $2)
+        `INSERT INTO pokemon (speciesId, name, sprite)
+         VALUES ($1, $2, $3)
          RETURNING id`,
-        [pkmn.speciesId, pkmn.name]
+        [pkmn.speciesId, pkmn.name, pkmn.sprite]
       );
       pkmnId = insertRes.rows[0].id;
 
