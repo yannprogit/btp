@@ -13,7 +13,7 @@ const PokemonCard = ({
       className="rounded-xl shadow p-4 cursor-pointer"
       onClick={onClick}
     >
-        <img className="h-45 object-cover mx-auto" src={pokemon.sprite} alt={pokemon.name}></img>
+      <img className="h-45 object-cover mx-auto" src={pokemon.sprite} alt={pokemon.name}></img>
       <div className="p-4">
         <p className="text-lg font-semibold text-gray-800 text-center">
         {pokemon.name}

@@ -1,4 +1,4 @@
-import PokemonCard from "./pokemon-card";
+import PokemonCard from "./pokemonCard";
 import type { Pokemon } from "../data";
 import { useState, useEffect } from "react";
 import axios from "axios";

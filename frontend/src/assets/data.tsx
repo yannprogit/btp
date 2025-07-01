@@ -18,8 +18,14 @@ export type Move = {
   description:string;
 }
 
+export type Team = {
+  name:string;
+  pokemons:PokemonInTeam[]
+}
+
 export type PokemonInTeam = Pokemon & {
   teamId: string;
+  moves: Move[];
 };
 
 export const pokemons: Pokemon[] = [
