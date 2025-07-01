@@ -25,7 +25,6 @@ export const getMovesByPokemon = async (id: string): Promise<Move[]> => {
       damage: data.power ?? 0,
       accuracy: data.accuracy ?? 100,
       description: effectEntry?.effect ?? "No description available",
-      category: data.damage_class.name,
       type: data.type.name,
     };
   });

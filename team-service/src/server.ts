@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { initDB } from './init/initDB';
-
+import { seedTypes } from './init/seedTypes';
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
@@ -31,6 +31,7 @@ router.use('/', teamRoutes);
 
 const startServer = async () => {
   await initDB();
+  await seedTypes();
   app.listen(5050, '0.0.0.0', () => {
     console.log(`Running on http://0.0.0.0:${port}`);
   });

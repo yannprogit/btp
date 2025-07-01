@@ -4,6 +4,5 @@ export interface Move {
   damage: number;
   accuracy: number;
   description: string;
-  category: string;
   type: string;
 }

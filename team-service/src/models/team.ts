@@ -1,5 +1,8 @@
+import { Pokemon } from "./pokemon";
+
 export interface Team {
   id: string|null;
   name: string;
   userId: string;
+  pokemons: Pokemon[];
 }
