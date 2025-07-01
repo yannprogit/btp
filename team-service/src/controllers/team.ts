@@ -25,7 +25,7 @@ export const getTeamById = async (req: Request, res: Response) => {
 };
 
 export const createTeam = async (req: Request, res: Response) => {
-  const { name } = req.body;
+  const { name, pokemons } = req.body;
   const userId = (req as any).user?.id;
 
   if (!name) {
@@ -33,7 +33,7 @@ export const createTeam = async (req: Request, res: Response) => {
   }
 
   try {
-    const newTeam = await teamService.createTeam({ name, userId });
+    const newTeam = await teamService.createTeam({ name, userId, pokemons });
     res.status(201).json(newTeam);
   } catch (err) {
     console.error('Error in createTeam: ', err);
@@ -43,18 +43,18 @@ export const createTeam = async (req: Request, res: Response) => {
 
 export const updateTeam = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, pokemons } = req.body;
 
   if (!name) {
     res.status(400).json({ message: 'Team name is required' });
   }
 
   try {
-    const updatedTeam = await teamService.updateTeam(id, name);
+    const updatedTeam = await teamService.updateTeam(id, { name, pokemons });
     if (!updatedTeam) {
       res.status(404).json({ message: 'Team not found' });
     }
-    res.json(updatedTeam);
+    res.status(204).send();
   } catch (err) {
     console.error('Error in updateTeam: ', err);
     res.status(500).json({ message: 'Internal server error' });
