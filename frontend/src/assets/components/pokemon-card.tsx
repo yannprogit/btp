@@ -1,5 +1,5 @@
 import type { Pokemon } from "../data";
-import type { PokemonType } from "../data";
+import type { Type } from "../data";
 
 const PokemonCard = ({
   pokemon,
@@ -19,7 +19,7 @@ const PokemonCard = ({
         {pokemon.name}
         </p>
         <div className="flex justify-center justify-between">
-        {pokemon.types.map((type:PokemonType) => (
+        {pokemon.types.map((type:Type) => (
         <img
           key={type.name}
           src={`/assets/images/types/${type.name}.png`}

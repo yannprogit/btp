@@ -1,4 +1,4 @@
-export type PokemonType = {
+export type Type = {
   name: string;
 };
 
@@ -6,17 +6,16 @@ export type Pokemon = {
   id: string
   name: string;
   sprite: string;
-  types: PokemonType[];
+  types: Type[];
 };
 
-export type Attack = {
+export type Move = {
   id:string;
   name:string;
-  type:string;
+  type:Type;
   damage:number;
   accuracy:number;
   description:string;
-  category:string;
 }
 
 export type PokemonInTeam = Pokemon & {
@@ -112,7 +111,7 @@ export const pokemons: Pokemon[] = [
   }
 ];
 
-export const attacks:Attack[] = [
+export const moves:Move[] = [
   {
     name: "Flammeche",
     type: {

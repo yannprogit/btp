@@ -7,12 +7,16 @@ const UserPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [currentPasswordInfo, setCurrentPasswordInfo] = useState("");
-
   const [newPassword, setNewPassword] = useState("");
   const [currentPasswordPwd, setCurrentPasswordPwd] = useState("");
-
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); 
+  const storedName = localStorage.getItem("userName");
+  let userName: string;
+  if (storedName !== null) {
+   userName = storedName;
+  }
+  const storedToken = localStorage.getItem("token");
 
   const handleUpdateInfo = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +33,11 @@ const UserPage = () => {
         name: name || undefined,
         email: email || undefined,
         currentPassword: currentPasswordInfo,
+      },
+      {
+        headers: {
+            Authorization: `Bearer ${storedToken}`,
+        },
       });
       setMessage("Informations mises à jour !");
     } catch (err: any) {
@@ -50,6 +59,11 @@ const UserPage = () => {
       await axios.put(`http://localhost:5000/users/${userId}`, {
         currentPassword: currentPasswordPwd,
         newPassword: newPassword,
+      },
+      {
+        headers: {
+            Authorization: `Bearer ${storedToken}`,
+        },
       });
       setMessage("Mot de passe mis à jour !");
     } catch (err: any) {
@@ -59,7 +73,10 @@ const UserPage = () => {
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
-      <h2 className="text-2xl font-bold mb-6 text-center">Mon Profil</h2>
+      <p className="w-15 h-15 rounded-md bg-blue-100 text-blue-800 font-bold flex items-center justify-center shadow absolute">
+        {userName.charAt(0).toUpperCase()}
+      </p>  
+      <h2 className="text-2xl font-bold mb-10 text-center">Mon Profil</h2>
 
       {message && <div className="text-green-600 mb-4 text-center">{message}</div>}
       {error && <div className="text-red-600 mb-4 text-center">{error}</div>}

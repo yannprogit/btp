@@ -11,9 +11,9 @@ const PokemonList = ({ onSelect }: PokemonListProps) => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [offset, setOffset] = useState<number>(0);
+  const [maxPage, setMaxPage] = useState<number>(0);
   const maxOffset = 1300;
   const page = Math.floor(offset / 20);
-  const maxPage = Math.floor(maxOffset / 20);
 
   useEffect(() => {
     const fetchPokemons = async () => {
@@ -22,7 +22,8 @@ const PokemonList = ({ onSelect }: PokemonListProps) => {
         const response = await axios.get(
           `http://localhost:5000/pokeapi/pokemons?offset=${offset}`
         );
-        setPokemons(response.data);
+        setPokemons(response.data.pokemons);
+        setMaxPage(response.data.maxPage);
       } catch (err: any) {
         setError(err.response?.data?.message || "Erreur lors de la récupération des pokémons");
       }
@@ -41,7 +42,7 @@ const PokemonList = ({ onSelect }: PokemonListProps) => {
 
   const handlePageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPage = parseInt(e.target.value, 10);
-    if (!isNaN(newPage) && newPage > 0 && newPage <= maxPage + 1) {
+    if (!isNaN(newPage) && newPage > 0 && newPage <= maxPage) {
       setOffset((newPage - 1) * 20);
     }
   };
@@ -78,11 +79,11 @@ const PokemonList = ({ onSelect }: PokemonListProps) => {
             type="number"
             value={page + 1}
             min={0}
-            max={maxPage + 1}
+            max={maxPage}
             onChange={handlePageChange}
             className="w-16 text-center py-1 px-2 rounded-md ring-1 ring-inset ring-gray-300"
           />
-          <span> / {maxPage + 1}</span>
+          <span> / {maxPage}</span>
         </div>
         <button
           onClick={handleNext}

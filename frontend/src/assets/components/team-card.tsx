@@ -1,48 +1,56 @@
-import type { PokemonInTeam, PokemonType } from "../data";
-import AttackSelect from "./attack-select";
-import type { Attack } from "../data";
+import type { PokemonInTeam, Type } from "../data";
+import MoveSelect from "./move-select";
+import type { Move } from "../data";
 import { Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-type TeamBuilderProps = {
+type TeamCardProps = {
   pokemon: PokemonInTeam;
   onRemove: () => void;
 };
 
 
-const TeamBuilder = ({ pokemon, onRemove }: TeamBuilderProps) => {
-  
+const TeamCard = ({ pokemon, onRemove }: TeamCardProps) => {
+  const [selectedMoves, setSelectedMoves] = useState([]);
   const [name, setName] = useState(pokemon.name);
-  const [attacks, setAttacks] = useState(["", "", "", ""]);
-  const [pokemonAttacks, setPokemonAttacks] = useState<Attack[]>([]);
-  const [loadingAttacks, setLoadingAttacks] = useState(true);
+  const [moves, setMoves] = useState(["", "", "", ""]);
+  const [pokemonMoves, setPokemonMoves] = useState<Move[]>([]);
+  const [loadingMoves, setLoadingMoves] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
 
-  const handleAttackChange = (attackName: string, slot: number) => {
-    const updated = [...attacks];
-    updated[slot - 1] = attackName;
-    setAttacks(updated);
+  const handleMoveChange = (moveName: string, slot: number) => {
+    const updated = [...moves];
+    updated[slot - 1] = moveName;
+    setMoves(updated);
   };
 
   useEffect(() => {
-  const fetchAttacks = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5000/pokeapi/moves/${pokemon.id}`);
-      const sortedAttacks = response.data.sort((a: Attack, b: Attack) =>
-        a.name.localeCompare(b.name)
-      );
-      setPokemonAttacks(sortedAttacks);
-    } catch (err) {
-      setError("Erreur lors du chargement des attaques.");
-    } finally {
-      setLoadingAttacks(false);
+    const fetchMoves = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/pokeapi/moves/${pokemon.id}`);
+        const sortedMoves = response.data.sort((a: Move, b: Move) =>
+          a.name.localeCompare(b.name)
+        );
+        setPokemonMoves(sortedMoves);
+      } catch (err) {
+        setError("Erreur lors du chargement des attaques.");
+      } finally {
+        setLoadingMoves(false);
+      }
+    };
+    fetchMoves();
+  }, [pokemon.id]);
+
+    const handleSelectMove = (move) => {
+    const updated = [...selectedMoves];
+    if (updated.length < 4) {
+      updated.push(move);
+      setSelectedMoves(updated);
+      updateMoves(index, updated);
     }
   };
-
-  fetchAttacks();
-}, [pokemon.id]);
 
   return (
     <div className="rounded-xl shadow p-4 bg-white items-center gap-4 justify-center">
@@ -70,7 +78,7 @@ const TeamBuilder = ({ pokemon, onRemove }: TeamBuilderProps) => {
             </input>
           </div>
           <div className="flex justify-center mx-auto items-center justify-between">
-          {pokemon.types.map((type:PokemonType) => (
+          {pokemon.types.map((type:Type) => (
             <img
               key={type.name}
               src={`/assets/images/types/${type.name}.png`}
@@ -84,15 +92,15 @@ const TeamBuilder = ({ pokemon, onRemove }: TeamBuilderProps) => {
         <div className="w-full my-2">
           <div className="flex gap-4 my-2">
             {/* Attaque 1 */}
-            <AttackSelect key={1} numero={1} onSelect={handleAttackChange} attacks={pokemonAttacks}></AttackSelect>
+            <MoveSelect key={1} numero={1} onSelect={handleMoveChange} moves={pokemonMoves}></MoveSelect>
             {/* Attaque 2 */}
-            <AttackSelect key={2} numero={2} onSelect={handleAttackChange} attacks={pokemonAttacks}></AttackSelect>
+            <MoveSelect key={2} numero={2} onSelect={handleMoveChange} moves={pokemonMoves}></MoveSelect>
           </div>
           <div className="flex gap-4 my-2">
             {/* Attaque 3 */}
-            <AttackSelect key={3} numero={3} onSelect={handleAttackChange} attacks={pokemonAttacks}></AttackSelect>
+            <MoveSelect key={3} numero={3} onSelect={handleMoveChange} moves={pokemonMoves}></MoveSelect>
             {/* Attaque 4 */}
-            <AttackSelect key={4} numero={4} onSelect={handleAttackChange} attacks={pokemonAttacks}></AttackSelect>
+            <MoveSelect key={4} numero={4} onSelect={handleMoveChange} moves={pokemonMoves}></MoveSelect>
           </div>
         </div>
       </div>
@@ -100,4 +108,4 @@ const TeamBuilder = ({ pokemon, onRemove }: TeamBuilderProps) => {
   );
 };
 
-export default TeamBuilder;
+export default TeamCard;
