@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { Pokemon } from '../models/pokemon';
 
-export const getPokemons = async (offset: number): Promise<Pokemon[]> => {
+export const getPokemons = async (offset: number): Promise<{ maxPage: number; pokemons: Pokemon[] }> => {
   const pkmnList = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`);
   const results = pkmnList.data.results;
+  const count = pkmnList.data.count;
 
   const detailedData = await Promise.all(
     results.map((pkmn: any) =>
@@ -24,5 +25,10 @@ export const getPokemons = async (offset: number): Promise<Pokemon[]> => {
     };
   });
 
-  return formattedPokemons;
+  const maxPage = Math.ceil(count / 20);
+
+  return {
+    maxPage,
+    pokemons: formattedPokemons
+  };
 };
