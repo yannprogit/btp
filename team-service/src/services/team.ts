@@ -12,7 +12,7 @@ export const getTeamsByUser = async (userId: string): Promise<Team[]> => {
 
   for (const teamRow of teamRes.rows) {
     const pkmnRes = await pool.query(
-      `SELECT p.id, p.speciesId, p.surname
+      `SELECT p.id, p.speciesId, p.name
        FROM pokemon p
        JOIN contain c ON c.pkmnId = p.id
        WHERE c.teamId = $1`,
@@ -50,7 +50,7 @@ export const getTeamsByUser = async (userId: string): Promise<Team[]> => {
       pokemons.push({
         id: pkmn.id.toString(),
         speciesId: pkmn.speciesid.toString(),
-        surname: pkmn.surname,
+        name: pkmn.name,
         types: typesRes.rows.map(t => ({ name: t.name })),
         moves
       });
@@ -79,7 +79,7 @@ export const getTeamById = async (teamId: string): Promise<Team> => {
   }
 
   const pkmnRes = await pool.query(
-    `SELECT p.id, p.speciesId, p.surname
+    `SELECT p.id, p.speciesId, p.name
      FROM pokemon p
      JOIN contain c ON c.pkmnId = p.id
      WHERE c.teamId = $1`,
@@ -117,7 +117,7 @@ export const getTeamById = async (teamId: string): Promise<Team> => {
     pokemons.push({
       id: pkmn.id,
       speciesId: pkmn.speciesid,
-      surname: pkmn.surname,
+      name: pkmn.name,
       types: typesRes.rows,
       moves
     });
@@ -142,10 +142,10 @@ export const createTeam = async (team: Omit<Team, 'id'>): Promise<Team> => {
 
   for (const pokemon of team.pokemons) {
     const pokemonResult = await pool.query(
-      `INSERT INTO pokemon (speciesId, surname)
+      `INSERT INTO pokemon (speciesId, name)
       VALUES ($1, $2)
       RETURNING id`,
-      [pokemon.speciesId, pokemon.surname]
+      [pokemon.speciesId, pokemon.name]
     );
     const pokemonId = pokemonResult.rows[0].id;
 
@@ -215,10 +215,10 @@ export const updateTeam = async (id: string, updates: { name: string, pokemons: 
 
     if (!pkmnId) {
       const insertRes = await pool.query(
-        `INSERT INTO pokemon (speciesId, surname)
+        `INSERT INTO pokemon (speciesId, name)
          VALUES ($1, $2)
          RETURNING id`,
-        [pkmn.speciesId, pkmn.surname]
+        [pkmn.speciesId, pkmn.name]
       );
       pkmnId = insertRes.rows[0].id;
 
@@ -229,9 +229,9 @@ export const updateTeam = async (id: string, updates: { name: string, pokemons: 
       );
     } else {
       await pool.query(
-        `UPDATE pokemon SET surname = $1, speciesId = $2
+        `UPDATE pokemon SET name = $1, speciesId = $2
          WHERE id = $3`,
-        [pkmn.surname, pkmn.speciesId, pkmnId]
+        [pkmn.name, pkmn.speciesId, pkmnId]
       );
 
       await pool.query(`DELETE FROM has WHERE pkmnId = $1`, [pkmnId]);

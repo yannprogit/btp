@@ -3,7 +3,7 @@ import { Type } from "./type";
 
 export interface Pokemon {
   id: string|null;
-  surname: string;
+  name: string;
   speciesId: string;
   types: Type[];
   moves: Move[];
