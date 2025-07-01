@@ -22,7 +22,7 @@ export const initDB = async () => {
       CREATE TABLE IF NOT EXISTS pokemon (
         id SERIAL PRIMARY KEY,
         speciesId INT NOT NULL,
-        surname VARCHAR(100)
+        name VARCHAR(100)
       );
     `);
     console.log("Table pokemons was created");
