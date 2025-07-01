@@ -67,7 +67,7 @@ export const getTeamsByUser = async (userId: string): Promise<Team[]> => {
   return teams;
 };
 
-export const getTeamById = async (teamId: string): Promise<Team | null> => {
+export const getTeamById = async (teamId: string): Promise<Team> => {
   const teamRes = await pool.query(
     `SELECT id, name, userId FROM teams WHERE id = $1`,
     [teamId]
@@ -75,7 +75,7 @@ export const getTeamById = async (teamId: string): Promise<Team | null> => {
   const team = teamRes.rows[0];
 
   if (!team) {
-    return null;
+    throw new Error("Team not found");
   }
 
   const pkmnRes = await pool.query(
