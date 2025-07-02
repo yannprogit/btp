@@ -32,8 +32,12 @@ const TeamPage = () => {
           },
         });
         setExistingTeams(response.data);
-      } catch (error) {
-        console.error("Erreur lors du chargement des équipes :", error);
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          console.error(error.response?.data?.message || "Erreur de requête axios lors de la récupération des équipes");
+        } else {
+          console.error("Erreur lors du chargement des équipes :", error);
+        }
       }
     };
   fetchTeams();
@@ -95,9 +99,13 @@ const TeamPage = () => {
       });
       alert(`Équipe ${selectedTeamId ? "modifiée" : "enregistrée"} avec succès !`);
       console.log("Réponse API :", response.data);
-    } catch (error) {
-      console.error("Erreur lors de la sauvegarde :", error);
-      alert("Erreur lors de la sauvegarde de l'équipe.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error(error.response?.data?.message || "Erreur de requête axios lors de l'enregistrement de l'équipe");
+      } else {
+        console.error("Erreur lors de la sauvegarde :", error);
+        alert("Erreur lors de la sauvegarde de l'équipe.");
+      }
     }
   };
 
@@ -130,8 +138,12 @@ const TeamPage = () => {
                       teamId: uuidv4(),
                     }))
                   );
-                } catch (err) {
-                  console.error("Erreur chargement équipe :", err);
+                } catch (error: unknown) {
+                  if (axios.isAxiosError(error)) {
+                    console.error(error.response?.data?.message || "Erreur de requête axios lors de la de la récupération de l'équipe");
+                  } else {
+                    console.error("Erreur chargement équipe :", error);
+                  }
                 }
               }}
             >

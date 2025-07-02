@@ -42,8 +42,10 @@ export const createTeam = async (req: Request, res: Response) => {
 };
 
 export const updateTeam = async (req: Request, res: Response) => {
+  console.log("request = ", req)
   const { id } = req.params;
   const { name, pokemons } = req.body;
+  console.log("pokemons =" ,pokemons)
 
   if (!name) {
     res.status(400).json({ message: 'Team name is required' });

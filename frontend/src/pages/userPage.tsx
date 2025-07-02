@@ -47,8 +47,12 @@ const UserPage = () => {
       localStorage.setItem("userName", name);
       navigate("/profile");
       setMessage("Informations mises à jour !");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Erreur lors de la mise à jour.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Erreur de requête axios lors de la modification de l'utilisateur");
+      } else {
+        setError("Erreur lors de la mise à jour.");
+      }
     }
   };
 
@@ -74,8 +78,12 @@ const UserPage = () => {
       });
       navigate("/profile");
       setMessage("Mot de passe mis à jour !");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Erreur lors du changement de mot de passe.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Erreur de requête axios lors de la modification de l'utilisateur");
+      } else {
+        setError("Erreur lors du changement de mot de passe.");
+      }
     }
   };
 
@@ -95,8 +103,12 @@ const UserPage = () => {
       localStorage.removeItem("userId");
       localStorage.removeItem("userName");
       navigate("/");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Erreur lors de la suppression du compte.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Erreur de requête axios lors de la suppression de l'utilisateur");
+      } else {
+        setError( "Erreur lors de la suppression du compte.");
+      }
     }
   };
 

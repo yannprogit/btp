@@ -36,8 +36,12 @@ const AuthPage = () => {
       localStorage.setItem("userId", response.data.user.id);
 
       navigate("/");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Erreur lors de la requête");
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          setError(error.response?.data?.message || "Erreur lors de la requête");
+        } else {
+          setError("Erreur lors du chargement des attaques.");
+        }
     }
   };
 

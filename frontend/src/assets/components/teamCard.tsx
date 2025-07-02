@@ -27,8 +27,12 @@ const TeamCard = ({ pokemon, onRemove, onChange }: TeamCardProps) => {
           a.name.localeCompare(b.name)
         );
         setPokemonMoves(sortedMoves);
-      } catch (err) {
-        console.error("Erreur lors du chargement des attaques.");
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          console.error(error.response?.data?.message || "Erreur de requête axios lors de la de la récupération des attaques");
+        } else {
+          console.error("Erreur lors du chargement des attaques.");
+        }
       }
     };
     fetchMoves();
