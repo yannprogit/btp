@@ -8,13 +8,18 @@ export const signup = async (req: Request, res: Response) => {
     res.status(400).json({ message: 'Missing fields' });
   }
 
-  const result = await authService.signup({ name, email, password });
+  try {
+    const result = await authService.signup({ name, email, password });
 
-  if (!result) {
-    res.status(409).json({ message: 'User already exists' });
+    if (!result) {
+      res.status(409).json({ message: 'User already exists' });
+    }
+
+    res.status(201).json(result);
+  } catch (error) {
+    console.error('Error in signup: ', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-
-  res.status(201).json(result);
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -24,11 +29,17 @@ export const login = async (req: Request, res: Response) => {
     res.status(400).json({ message: 'Missing credentials' });
   }
 
-  const result = await authService.login(email, password);
+  try {
+    const result = await authService.login(email, password);
 
-  if (!result) {
-    res.status(401).json({ message: 'Invalid credentials' });
+    if (!result) {
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error in login: ', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 
-  res.json(result);
 };

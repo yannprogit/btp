@@ -7,8 +7,8 @@ export const getPokemons = async (req: Request, res: Response) => {
 
     const pokemons = await pokemonService.getPokemons(offset);
     res.json(pokemons);
-  } catch (err) {
-    console.error('Error in getPokemons: ', err);
+  } catch (error) {
+    console.error('Error in getPokemons: ', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

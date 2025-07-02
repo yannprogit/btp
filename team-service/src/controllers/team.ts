@@ -7,8 +7,8 @@ export const getTeamsByUser = async (req: Request, res: Response) => {
   try {
     const teams = await teamService.getTeamsByUser(userId);
     res.json(teams);
-  } catch (err) {
-    console.error('Error in getTeamsByUser: ', err);
+  } catch (error) {
+    console.error('Error in getTeamsByUser: ', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -18,8 +18,8 @@ export const getTeamById = async (req: Request, res: Response) => {
     const team = await teamService.getTeamById(req.params.id);
     if (!team) res.status(404).json({ message: 'Team not found' });
     res.json(team);
-  } catch (err) {
-    console.error('Error in getTeamsById: ', err);
+  } catch (error) {
+    console.error('Error in getTeamsById: ', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -35,8 +35,8 @@ export const createTeam = async (req: Request, res: Response) => {
   try {
     const newTeam = await teamService.createTeam({ name, userId, pokemons });
     res.status(201).json(newTeam);
-  } catch (err) {
-    console.error('Error in createTeam: ', err);
+  } catch (error) {
+    console.error('Error in createTeam: ', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -57,8 +57,8 @@ export const updateTeam = async (req: Request, res: Response) => {
       res.status(404).json({ message: 'Team not found' });
     }
     res.status(204).send();
-  } catch (err) {
-    console.error('Error in updateTeam: ', err);
+  } catch (error) {
+    console.error('Error in updateTeam: ', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -70,8 +70,8 @@ export const deleteTeam = async (req: Request, res: Response) => {
       res.status(404).json({ message: 'Team not found' });
     }
     res.status(204).send();
-  } catch (err) {
-    console.error('Error in deleteTeam: ', err);
+  } catch (error) {
+    console.error('Error in deleteTeam: ', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
