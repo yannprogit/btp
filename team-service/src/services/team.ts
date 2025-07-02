@@ -153,6 +153,7 @@ export const createTeam = async (team: Omit<Team, 'id'>): Promise<Team> => {
 };
 
 export const updateTeam = async (id: string, updates: { name: string, pokemons: Pokemon[]}): Promise<Boolean> => {
+  console.log("team service udpate service =", updates.pokemons)
   await pool.query(
     `UPDATE teams SET name = $1 WHERE id = $2`,
     [updates.name, id]
