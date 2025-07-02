@@ -9,7 +9,8 @@ import axios from "axios";
 
 type PokemonInTeamExtended = PokemonInTeam & {
   moves?: Move[];
-  name: string;
+  dataBaseId: string | null;
+  speciesId: string;
 };
 
 const TeamPage = () => {
@@ -23,6 +24,7 @@ const TeamPage = () => {
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
     setUserName(storedUserName);
+
     const fetchTeams = async () => {
       try {
         if (!token) return;
@@ -40,12 +42,20 @@ const TeamPage = () => {
         }
       }
     };
-  fetchTeams();
-}, [token]);
+
+    fetchTeams();
+  }, [token]);
 
   const handleAddToTeam = (pokemon: Pokemon) => {
     if (team.length >= 6) return;
-    const newPokemon = { ...pokemon, teamId: uuidv4(), moves: [], name: pokemon.name };
+    const newPokemon: PokemonInTeamExtended = {
+      ...pokemon,
+      dataBaseId: null,
+      speciesId: pokemon.id,
+      teamId: uuidv4(),
+      moves: [],
+      name: pokemon.name,
+    };
     setTeam([...team, newPokemon]);
   };
 
@@ -67,29 +77,29 @@ const TeamPage = () => {
       alert("Le nom de l'équipe est requis pour enregistrer.");
       return;
     }
+
     const teamData = {
       name,
       pokemons: team.map((pokemon) => ({
-        speciesId: pokemon.id,
+        id: pokemon.dataBaseId,
+        speciesId: pokemon.speciesId,
         name: pokemon.name,
         types: pokemon.types,
         sprite: pokemon.sprite,
         moves: pokemon.moves || [],
       })),
     };
-    console.log(teamData);
+
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Token non trouvé. Veuillez vous connecter.");
       return;
     }
-    console.log(selectedTeamId)
+
     try {
       const url = selectedTeamId
         ? `http://localhost:5000/teams/${selectedTeamId}`
         : "http://localhost:5000/teams";
-      console.log(url)
-      console.log(selectedTeamId ? axios.put : axios.post);
       const method = selectedTeamId ? axios.put : axios.post;
       const response = await method(url, teamData, {
         headers: {
@@ -97,6 +107,7 @@ const TeamPage = () => {
           "Content-Type": "application/json",
         },
       });
+
       alert(`Équipe ${selectedTeamId ? "modifiée" : "enregistrée"} avec succès !`);
       console.log("Réponse API :", response.data);
     } catch (error: unknown) {
@@ -117,45 +128,51 @@ const TeamPage = () => {
           Notre Team Builder Pokémon est un outil simple et visuel pour créer votre équipe idéale de 6 Pokémon.
         </p>
         <div className="max-w-full mx-auto px-4 py-4">
-        {token && (
-          <div className="mb-4 flex justify-center">
-            <label className="font-bold block mb-1">Charger une équipe :</label>
-            <select
-              className="w-1/6 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 ml-4"
-              onChange={async (e) => {
-                const teamId = e.target.value;
-                setSelectedTeamId(teamId);
-                try {
-                  const token = localStorage.getItem("token");
-                  const response = await axios.get(`http://localhost:5000/teams/${teamId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                  });
-                  const loadedTeam = response.data;
-                  setName(loadedTeam.name);
-                  setTeam(
-                    loadedTeam.pokemons.map((pokemon: any) => ({
-                      ...pokemon,
-                      teamId: uuidv4(),
-                    }))
-                  );
-                } catch (error: unknown) {
-                  if (axios.isAxiosError(error)) {
-                    console.error(error.response?.data?.message || "Erreur de requête axios lors de la de la récupération de l'équipe");
-                  } else {
-                    console.error("Erreur chargement équipe :", error);
+          {token && (
+            <div className="mb-4 flex justify-center">
+              <label className="font-bold block mb-1">Charger une équipe :</label>
+              <select
+                className="w-1/6 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 ml-4"
+                onChange={async (e) => {
+                  const teamId = e.target.value;
+                  setSelectedTeamId(teamId);
+                  try {
+                    const token = localStorage.getItem("token");
+                    const response = await axios.get(`http://localhost:5000/teams/${teamId}`, {
+                      headers: { Authorization: `Bearer ${token}` },
+                    });
+                    const loadedTeam = response.data;
+                    setName(loadedTeam.name);
+                    setTeam(
+                      loadedTeam.pokemons.map((pokemon: any) => ({
+                        ...pokemon,
+                        dataBaseId: pokemon.id ?? null,
+                        speciesId: pokemon.speciesId,
+                        teamId: uuidv4(),
+                      }))
+                    );
+                  } catch (error: unknown) {
+                    if (axios.isAxiosError(error)) {
+                      console.error(
+                        error.response?.data?.message ||
+                          "Erreur de requête axios lors de la récupération de l'équipe"
+                      );
+                    } else {
+                      console.error("Erreur chargement équipe :", error);
+                    }
                   }
-                }
-              }}
-            >
-              <option value="">Sélectionner une équipe</option>
-              {existingTeams.map((team) => (
-                <option key={team.id} value={team.id}>
-                  {team.name}
-                </option>
-              ))}
-            </select>
-          </div>
+                }}
+              >
+                <option value="">Sélectionner une équipe</option>
+                {existingTeams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
+
           {team.length > 0 && (
             <div className="mt-6 p-4 bg-neutral-100 rounded-lg text-center">
               <h2 className="text-xl font-bold mb-2">Mon équipe</h2>

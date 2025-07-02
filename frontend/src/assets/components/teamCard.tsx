@@ -22,7 +22,8 @@ const TeamCard = ({ pokemon, onRemove, onChange }: TeamCardProps) => {
   useEffect(() => {
     const fetchMoves = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/pokeapi/moves/${pokemon.id}`);
+        const moveSourceId = (pokemon as any).speciesId ?? pokemon.id;
+        const response = await axios.get(`http://localhost:5000/pokeapi/moves/${moveSourceId}`);
         const sortedMoves = response.data.sort((a: Move, b: Move) =>
           a.name.localeCompare(b.name)
         );
