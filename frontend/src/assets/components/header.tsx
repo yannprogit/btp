@@ -24,7 +24,6 @@ function Header() {
     setIsMenuOpen(false);
   };
 
-  // Ferme le menu si on clique en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -47,7 +46,6 @@ function Header() {
           Builder Team Pokemon
         </h1>
       </a>
-
       <nav>
         {userName ? (
           <div className="relative" ref={menuRef}>
@@ -58,7 +56,6 @@ function Header() {
             >
               {userName.charAt(0).toUpperCase()}
             </button>
-
             {isMenuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                 <div className="px-4 py-2 text-sm text-gray-700 font-semibold border-b border-gray-200">
@@ -80,10 +77,7 @@ function Header() {
             )}
           </div>
         ) : (
-          <a
-            href="/auth"
-            className="text-blue-600 font-medium hover:underline whitespace-nowrap"
-          >
+          <a href="/auth" className="text-blue-600 font-medium hover:underline whitespace-nowrap">
             Login
           </a>
         )}

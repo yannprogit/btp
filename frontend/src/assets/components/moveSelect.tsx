@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { Move } from "../data";
+import type { Move } from "../interfaces/pokemon";
 
 type MoveSelectProps = {
   numero: number;

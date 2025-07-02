@@ -1,12 +1,12 @@
 import PokemonCard from "./pokemonCard";
-import type { Pokemon } from "../data";
+import type { Pokemon } from "../interfaces/pokemon";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 type PokemonListProps = {
   onSelect: (pkmn: Pokemon) => void;
 };
- 
+
 const PokemonList = ({ onSelect }: PokemonListProps) => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [error, setError] = useState<string | null>(null);

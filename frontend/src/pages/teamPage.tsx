@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import PokemonList from "../assets/components/pokemonList";
 import Header from "../assets/components/header";
 import TeamCard from "../assets/components/teamCard";
-import type { Pokemon, PokemonInTeam, Move, Team} from "../assets/data";
+import type { PokemonInTeam, Pokemon, Move } from "../assets/interfaces/pokemon";
+import type { Team, ExistingTeam } from "../assets/interfaces/team";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
@@ -15,7 +16,7 @@ const TeamPage = () => {
   const [team, setTeam] = useState<PokemonInTeamExtended[]>([]);
   const [name, setName] = useState("");
   const [userName, setUserName] = useState<string | null>(null);
-  const [existingTeams, setExistingTeams] = useState<Team[]>([]);
+  const [existingTeams, setExistingTeams] = useState<ExistingTeam[]>([]);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const token = localStorage.getItem("token");
 
@@ -109,7 +110,7 @@ const TeamPage = () => {
         </p>
         <div className="max-w-full mx-auto px-4 py-4">
         {token && (
-          <div className="mb-4 flex">
+          <div className="mb-4 flex justify-center">
             <label className="font-bold block mb-1">Charger une équipe :</label>
             <select
               className="w-1/6 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 ml-4"
@@ -124,9 +125,9 @@ const TeamPage = () => {
                   const loadedTeam = response.data;
                   setName(loadedTeam.name);
                   setTeam(
-                    loadedTeam.pokemons.map((p: any) => ({
-                      ...p,
-                      teamId: uuidv4(), // identifiant local
+                    loadedTeam.pokemons.map((pokemon: any) => ({
+                      ...pokemon,
+                      teamId: uuidv4(),
                     }))
                   );
                 } catch (err) {

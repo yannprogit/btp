@@ -1,6 +1,5 @@
-import type { PokemonInTeam, Type } from "../data";
+import type { PokemonInTeam, Move, Type } from "../interfaces/pokemon";
 import MoveSelect from "./moveSelect";
-import type { Move } from "../data";
 import { Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";

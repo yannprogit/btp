@@ -1,5 +1,4 @@
-import type { Pokemon } from "../data";
-import type { Type } from "../data";
+import type { Pokemon, Type } from "../interfaces/pokemon";
 
 const PokemonCard = ({
   pokemon,

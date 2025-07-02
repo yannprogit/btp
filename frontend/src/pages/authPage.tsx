@@ -30,10 +30,10 @@ const AuthPage = () => {
 
     try {
       const response = await axios.post(url, payload);
-
       const token = response.data.token;
       localStorage.setItem("token", token);
       localStorage.setItem("userName", response.data.user.name);
+      localStorage.setItem("userId", response.data.user.id);
 
       navigate("/");
     } catch (err: any) {
