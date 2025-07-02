@@ -2,7 +2,7 @@
 
 ## Presentation
 
-**Builder Team Pokemon** (BTP) est, comme son nom l’indique, un gestionnaire d'équipe pokémon ergonomique et intuitif qui permet de créer efficacement ses équipes pokémon.
+**Builder Team Pokemon** (BTP) est, comme son nom l’indique, un gestionnaire d'équipe Pokémon ergonomique et intuitif qui permet de créer efficacement ses équipes Pokémon.
 
 ## Architecture
 
@@ -15,18 +15,22 @@
 ```
 builder_team_pokemon/
 ├── frontend/ # Application React
-│ ├── public/
-│ └── src/
-│ ├── assets/
-│ │ └── components/ #composant frontend
-│ ├── pages/
-│ └── App.tsx
+│    ├── public/assets/images # Images
+│    │     ├── types/ # Pokemon Type icons
+│    └── src/
+│         ├── assets/
+│         │    └── components/ # Composants frontend
+│         ├── pages/
+│         │    ├──authPage.tsx # Login page
+│         │    ├──userPage.tsx # Profile page
+│         │    └──teamPage.tsx # Home page
+│         └── App.tsx # Routing React
 │
 ├── api-gateway/ # API Gateway
 │
-├── user-service/ # Microservice utilisateur géré par docker
+├── user-service/ # Microservice utilisateur géré par Docker
 │
-├── team-service/ # Microservice team Pokémon géré par docker
+├── team-service/ # Microservice team Pokémon géré par Docker
 │
 ├── README.md
 └── .gitignore
@@ -34,49 +38,56 @@ builder_team_pokemon/
 
 ## Choix technique
 
-Dans ce projet, nous avons fait le choix d’une architecture microservices qui permet non seulement de mieux organiser le code, mais aussi de faciliter les évolutions.
-Les services communiquent à travers un API Gateway et chacun s’appuie sur une base de données PostgreSQL, choisi par une préférence de l'équipe.
+Dans ce projet, nous avons fait le choix d’une architecture microservices qui permet non seulement de mieux organiser le code, mais aussi de faciliter les évolutions.  
+Les services communiquent à travers un API Gateway et chacun s’appuie sur une base de données PostgreSQL, choisie par une préférence de l'équipe.
 
-Tous les differents élements sont conteneurisés avec Docker, ce qui assure un environnement reproductible sur toutes les machines, que ce soit en développement ou en production.
+Tous les différents éléments sont conteneurisés avec Docker, ce qui assure un environnement reproductible sur toutes les machines, que ce soit en développement ou en production.
 
 ### Au niveau des choix des technologies :
 
-La partie Frontend est réalisé en React avec TypeScript. L’utilisation de React nous permet de nous améliorer sur cette technologie très présente dans le monde du développement web, tandis que TypeScript renforce la rigueur du code, améliorant ainsi la lisibilité et la robustesse.
+La partie Frontend est réalisée en React avec TypeScript. L’utilisation de React nous permet de nous améliorer sur cette technologie très présente dans le monde du développement web, tandis que TypeScript renforce la rigueur du code, améliorant ainsi la lisibilité et la robustesse.
 
-Pour la partie Backend, nous la réalisons avec express.js, qui est simple à mettre en place et fonctionne très bien, ainsi que
-TypeScript pour les même raison que le Frontend.
+Pour la partie Backend, nous la réalisons avec express.js, qui est simple à mettre en place et fonctionne très bien, ainsi que  
+TypeScript pour les mêmes raisons que le Frontend.
+
+## Dépendances
+
+Pour faciliter la production du projet nous utilisons des librairies telles que :
+
+- Axios pour les requêtes API
+- Lucide pour les icônes simples
 
 ## Lancement du projet
 
-### Etape 1:
+### Étape 1 :
 
 Démarrer Docker
 
-### Etape 2:
+### Étape 2 :
 
-Lancer la commande à la racinne du projet
+Lancer la commande à la racine du projet
 
 ```
-.\start.bat\
+.\start.bat
 ```
 
-### Etape 3:
+### Étape 3 :
 
-Aller dans la partie front du projet a l'aide de la commande
+Aller dans la partie front du projet à l'aide de la commande
 
 ```
 cd front
 ```
 
-### Etape 4:
+### Étape 4 :
 
-Executer l'installateur npm a l'aide de la commande
+Exécuter l'installateur npm à l'aide de la commande
 
 ```
 npm i
 ```
 
-### Etape 5:
+### Étape 5 :
 
 Lancer le rendu front avec
 
@@ -84,18 +95,34 @@ Lancer le rendu front avec
 npm run dev
 ```
 
-### Etape 6:
+### Étape 6 :
 
-Sur docker, Aller dans les containers -> Selectionner "api-gateway" -> Aller dans la section "port" et cliquer sur le lien
+Sur Docker, aller dans les containers -> Sélectionner "api-gateway" -> Aller dans la section "port" et cliquer sur le lien
 
-### Et voila !
+### Et voilà !
 
-vous avez lancé BTP ! félicitations ! :smiley:
+Vous avez lancé BTP ! Félicitations ! 😃
 
 ## Notes
 
-### sécurité
+### Autres commandes
 
-Par soucis pratique d'utilisation lors de la récupération du projet, nous avons décidé d'intégré le .env au git. Bien sur dans un vrai projet destiné a etre utilisé par le grand public ça n'arriverai pas avec
+En cas de besoin pour relancer entièrement le Docker, une commande est disponible :
+
+```
+.\stop.bat
+```
+
+Une fois la commande effectuée, vous pouvez supprimer vos volumes si vous souhaitez remettre à neuf vos données.
+
+Pour relancer le Docker, il suffit de rejouer la commande :
+
+```
+.\start.bat
+```
+
+### Sécurité
+
+Par souci pratique d'utilisation lors de la récupération du projet, nous avons décidé d’intégrer le `.env` au git. Bien sûr, dans un vrai projet destiné à être utilisé par le grand public, cela n'arriverait pas.
 
 GURY Timothé / SADY Yann
