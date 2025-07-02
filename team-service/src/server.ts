@@ -5,8 +5,10 @@ import { seedTypes } from './init/seedTypes';
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import swaggerUI from 'swagger-ui-express';
 import { setupLogging } from './logging';
 import teamRoutes from './routes/team';
+import { swaggerSpec } from './config/swagger';
 
 const app: Express = express();
 const router = app.router;
@@ -26,6 +28,9 @@ app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+router.use('/api-docs', swaggerUI.serve);
+router.get('/api-docs', swaggerUI.setup(swaggerSpec));
 
 router.use('/', teamRoutes);
 
