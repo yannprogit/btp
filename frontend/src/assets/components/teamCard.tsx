@@ -37,7 +37,7 @@ const TeamCard = ({ pokemon, onRemove, onChange }: TeamCardProps) => {
       }
     };
     fetchMoves();
-  }, [pokemon.id]);
+  }, [pokemon.id, pokemon]);
 
   const handleMoveChange = (moveName: string, slot: number) => {
     const updated = [...moves];
