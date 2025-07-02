@@ -5,13 +5,13 @@ dotenv.config();
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'Team API',
+    title: 'PokeAPI',
     version: '1.0.0',
-    description: 'API documentation for team microservice'
+    description: 'API documentation for pokeapi microservice'
   },
   servers: [
     {
-      url: process.env.API_PORT || 5555,
+      url: `http://localhost:${process.env.API_PORT || 6000}`,
       description: 'Development server'
     }
   ],

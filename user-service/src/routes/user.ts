@@ -12,31 +12,48 @@ const router = Router();
  *     description: Retrieve a list of users from JSONPlaceholder. Can be used to populate a list of fake users when prototyping or testing an API.
  *     security:
  *       - bearerAuth: []
- *      responses:
+ *     responses:
  *       200:
  *         description: A list of users.
  *         content:
  *           application/json:
  *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: The user ID.
+ *                     example: 1
+ *                   name:
+ *                     type: string
+ *                     description: The user's name.
+ *                     example: Gerald
+ *                   email:
+ *                     type: string
+ *                     description: The user's email.
+ *                     example: gerald@gmail.com
+ *       401:
+ *         description: Unauthorized.
+ *         content:
+ *           application/json:
+ *             schema:
  *               type: object
  *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         description: The user ID.
- *                         example: 1
- *                       name:
- *                         type: string
- *                         description: The user's name.
- *                         example: Gerald
- *                       email:
- *                         type: string
- *                         description: The user's email.
- *                         example: gerald@gmail.com
+ *                 message:
+ *                   type: string
+ *                   example: Missing or invalid token
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.get('/', authMiddleware, userController.getUsers);
 
@@ -66,6 +83,34 @@ router.get('/', authMiddleware, userController.getUsers);
  *                   example: gerald@gmail.com
  *       404:
  *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       401:
+ *         description: Unauthorized.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Missing or invalid token
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.get('/me', authMiddleware, userController.getMe);
 
@@ -73,7 +118,7 @@ router.get('/me', authMiddleware, userController.getMe);
  * @openapi
  * /users/{id}:
  *   get:
- *     summary: Retrieve a single user by id.
+ *     summary: Retrieve a single user by ID.
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -82,7 +127,7 @@ router.get('/me', authMiddleware, userController.getMe);
  *         required: true
  *         schema:
  *           type: string
- *         description: The user id.
+ *         description: The user ID.
  *     responses:
  *       200:
  *         description: The user data.
@@ -102,6 +147,34 @@ router.get('/me', authMiddleware, userController.getMe);
  *                   example: gerald@gmail.com
  *       404:
  *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       401:
+ *         description: Unauthorized.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Missing or invalid token
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.get('/:id', authMiddleware, userController.getUserById);
 
@@ -110,6 +183,7 @@ router.get('/:id', authMiddleware, userController.getUserById);
  * /users:
  *   post:
  *     summary: Create a new user.
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -138,17 +212,41 @@ router.get('/:id', authMiddleware, userController.getUserById);
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   example: 1
- *                 name:
+ *                 token:
  *                   type: string
- *                   example: Gerald
- *                 email:
- *                   type: string
- *                   example: gerald@gmail.com
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ949DF491S19SDd
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 2
+ *                     name:
+ *                       type: string
+ *                       example: Gerald
+ *                     email:
+ *                       type: string
+ *                       example: gerald@gmail.com
  *       400:
  *         description: Missing fields in request body.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Fields are missing
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.post('/', userController.createUser);
 
@@ -165,12 +263,40 @@ router.post('/', userController.createUser);
  *         required: true
  *         schema:
  *           type: string
- *         description: The user id.
+ *         description: The user ID.
  *     responses:
  *       204:
  *         description: User deleted successfully.
  *       404:
  *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       401:
+ *         description: Unauthorized.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Missing or invalid token
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.delete('/:id', authMiddleware, userController.deleteUser);
 
@@ -187,7 +313,7 @@ router.delete('/:id', authMiddleware, userController.deleteUser);
  *         required: true
  *         schema:
  *           type: string
- *         description: The user id.
+ *         description: The user ID.
  *     requestBody:
  *       required: true
  *       content:
@@ -215,8 +341,44 @@ router.delete('/:id', authMiddleware, userController.deleteUser);
  *         description: User updated successfully.
  *       400:
  *         description: Bad request (missing currentPassword or no fields to update).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Current password is required
+ *       401:
+ *         description: Unauthorized.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Missing or invalid token
  *       403:
  *         description: Invalid credentials (currentPassword incorrect).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid credentials
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.put('/:id', authMiddleware, userController.updateUser);
 
