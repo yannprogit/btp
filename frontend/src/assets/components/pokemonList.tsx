@@ -24,8 +24,12 @@ const PokemonList = ({ onSelect }: PokemonListProps) => {
         );
         setPokemons(response.data.pokemons);
         setMaxPage(response.data.maxPage);
-      } catch (err: any) {
-        setError(err.response?.data?.message || "Erreur lors de la récupération des pokémons");
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          setError(err.response?.data?.message || "Erreur de requête axios lors de la récupération des pokémons");
+        } else {
+          setError("Erreur inconnue lors de la récupération des pokémons");
+        }
       }
     };
 
