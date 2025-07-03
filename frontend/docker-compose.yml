@@ -1,12 +1,16 @@
 services:
-  pokeapi-app: 
+  front-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: pokeapi_service
-    restart: always
+    container_name: frontend
     ports:
-      - "${API_PORT}:6000"
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - btp-network
 
