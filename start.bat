@@ -1,5 +1,5 @@
 @echo off
-docker network create --driver bridge my-network
+docker network create --driver bridge btp-network
 
 echo Launching user service
 cd user-service
@@ -18,6 +18,11 @@ cd ..
 
 echo Launching API Gateway
 cd api-gateway
+docker-compose up -d
+cd ..
+
+echo Launching Frontend
+cd frontend
 docker-compose up -d
 cd ..
 

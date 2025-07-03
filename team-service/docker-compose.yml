@@ -8,7 +8,7 @@ services:
     ports:
       - "${API_PORT}:5050"
     networks:
-      - my-network
+      - btp-network
     depends_on:
       - db
   db:
@@ -24,7 +24,7 @@ services:
     volumes:
       - local_pgdata:/var/lib/postgresql/data
     networks:
-      - my-network
+      - btp-network
   pgadmin:
     image: dpage/pgadmin4
     container_name: team_pgadmin4
@@ -37,7 +37,7 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     networks:
-      - my-network
+      - btp-network
     depends_on:
       - db
 
@@ -46,6 +46,6 @@ volumes:
   pgadmin-data:
 
 networks: 
-  my-network:
+  btp-network:
     driver: bridge
     external: true

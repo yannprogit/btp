@@ -23,5 +23,11 @@ docker-compose down
 docker rmi pokeapi-service-pokeapi-app
 cd ..
 
-echo All services stopped !
+echo Stopping frontend
+cd frontend
+docker-compose down
+docker rmi frontend-front-app
+cd ..
+
+echo Application stopped !
 pause
