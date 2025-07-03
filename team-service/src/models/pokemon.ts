@@ -2,7 +2,7 @@ import { Move } from "./move";
 import { Type } from "./type";
 
 export interface Pokemon {
-  id: string|null;
+  id: string;
   name: string;
   sprite: string;
   speciesId: string;

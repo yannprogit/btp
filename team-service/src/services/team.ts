@@ -159,6 +159,22 @@ export const updateTeam = async (id: string, updates: { name: string, pokemons: 
     [updates.name, id]
   );
 
+    const currentPkmnRes = await pool.query(
+    'SELECT pkmnId FROM contain WHERE teamId = $1',
+    [id]
+  );
+  const currentPkmnIds = currentPkmnRes.rows.map(row => row.pkmnid);
+
+  const updatedPkmnIds = updates.pokemons
+    .filter(p => p.id)
+    .map(p => p.id);
+
+  const toDelete = currentPkmnIds.filter(pkmnId => !updatedPkmnIds.includes(pkmnId));
+
+  for (const pkmnId of toDelete) {
+    await pool.query('DELETE FROM pokemon WHERE id = $1', [pkmnId]);
+  }
+
   for (const pkmn of updates.pokemons) {
     let pkmnId = pkmn.id;
 
@@ -240,4 +256,11 @@ export const deleteTeam = async (id: string): Promise<boolean> => {
   `);
 
   return true;
+};
+
+export const deletePokemonById = async (id: number): Promise<void> => {
+  await pool.query(
+    `DELETE FROM pokemon WHERE id = $1`,
+    [id]
+  );
 };
