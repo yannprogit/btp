@@ -14,21 +14,6 @@
 
 ```
 builder_team_pokemon/
-frontend/
-  ├── public/assets/images
-  │     ├── types/
-  └── src/
-       ├── assets/
-       │    ├── components/
-       │    └── interfaces/
-       │         ├── pokemon.tsx
-       │         └── team.tsx
-       ├── pages/
-       │    ├── authPage.tsx
-       │    ├── userPage.tsx
-       │    └── teamPage.tsx
-       └── App.tsx
-
 ├── frontend/ # Application React
 │    ├── public/assets/images # Images
 │    │     ├── types/ # Pokemon Type icons
@@ -49,6 +34,8 @@ frontend/
 ├── user-service/ # Microservice utilisateur géré par Docker
 │
 ├── team-service/ # Microservice team Pokémon géré par Docker
+│
+├── pokeAPI-service/ # Microservice géré par Docker de requete externe vers pokeAPI
 │
 ├── README.md
 └── .gitignore
