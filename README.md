@@ -14,12 +14,30 @@
 
 ```
 builder_team_pokemon/
+frontend/
+  ├── public/assets/images
+  │     ├── types/
+  └── src/
+       ├── assets/
+       │    ├── components/
+       │    └── interfaces/
+       │         ├── pokemon.tsx
+       │         └── team.tsx
+       ├── pages/
+       │    ├── authPage.tsx
+       │    ├── userPage.tsx
+       │    └── teamPage.tsx
+       └── App.tsx
+
 ├── frontend/ # Application React
 │    ├── public/assets/images # Images
 │    │     ├── types/ # Pokemon Type icons
 │    └── src/
 │         ├── assets/
-│         │    └── components/ # Composants frontend
+│         │    ├── components/ # Composants frontend
+│         │    └── interfaces/ # Typescript Class
+│         │       ├── pokemon.tsx
+│         │       └── team.tsx
 │         ├── pages/
 │         │    ├──authPage.tsx # Login page
 │         │    ├──userPage.tsx # Profile page
@@ -39,7 +57,7 @@ builder_team_pokemon/
 ## Choix technique
 
 Dans ce projet, nous avons fait le choix d’une architecture microservices qui permet non seulement de mieux organiser le code, mais aussi de faciliter les évolutions.  
-Les services communiquent à travers un API Gateway et chacun s’appuie sur une base de données PostgreSQL, choisie par une préférence de l'équipe.
+Les services communiquent à travers un API Gateway et chacun s’appuie sur une base de données PostgreSQL, choisie par une préférence de l'équipe, à l'exception de pokeApi service qui communique avec l'api open source PokeAPI.
 
 Tous les différents éléments sont conteneurisés avec Docker, ce qui assure un environnement reproductible sur toutes les machines, que ce soit en développement ou en production.
 
@@ -73,31 +91,7 @@ Lancer la commande à la racine du projet
 
 ### Étape 3 :
 
-Aller dans la partie front du projet à l'aide de la commande
-
-```
-cd front
-```
-
-### Étape 4 :
-
-Exécuter l'installateur npm à l'aide de la commande
-
-```
-npm i
-```
-
-### Étape 5 :
-
-Lancer le rendu front avec
-
-```
-npm run dev
-```
-
-### Étape 6 :
-
-Sur Docker, aller dans les containers -> Sélectionner "api-gateway" -> Aller dans la section "port" et cliquer sur le lien
+Sur Docker, aller dans les containers -> Sélectionner "frontend" -> Aller dans la section "port" et cliquer sur le lien
 
 ### Et voilà !
 
