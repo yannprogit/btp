@@ -1,63 +1,33 @@
 # 🦖 Builder Team Pokemon
 
-## Presentation
+## Sommaire
 
-**Builder Team Pokemon** (BTP) est, comme son nom l’indique, un gestionnaire d'équipe Pokémon ergonomique et intuitif qui permet de créer efficacement ses équipes Pokémon.
+1.  [Presentation](#1-presentation)
+2.  [Lancement du projet](#2-lancement-du-projet)
+3.  [Architecture](#3-architecture)
+4.  [Choix technique](#4-choix-technique)
+5.  [Dépendances](#5-dépendances)
+6.  [Notes](#6-notes)
 
-## Architecture
+## 1. Presentation
 
-### architecture du projet
+**Builder Team Pokemon** (BTP) est une solution moderne de gestion d'équipe Pokémon.
 
-![alt text](images/architecture.png)
+Le projet est né d'un constat simple : la plupart des gestionnaires d'équipe existants, bien que fonctionnels, manquent souvent d'ergonomie et d'une interface soignée. 
 
-### Architecture des fichiers
+Notre objectif était donc de créer un outil qui allie l'utile à l'agréable, en proposant une expérience utilisateur fluide, intuitive et visuellement attractive pour construire efficacement ses équipes stratégiques.
 
-```
-builder_team_pokemon/
-├── frontend/ # Application React
-│    ├── public/assets/images # Images
-│    │     ├── types/ # Pokemon Type icons
-│    └── src/
-│         ├── assets/
-│         │    └── components/ # Composants frontend
-│         ├── pages/
-│         │    ├──authPage.tsx # Login page
-│         │    ├──userPage.tsx # Profile page
-│         │    └──teamPage.tsx # Home page
-│         └── App.tsx # Routing React
-│
-├── api-gateway/ # API Gateway
-│
-├── user-service/ # Microservice utilisateur géré par Docker
-│
-├── team-service/ # Microservice team Pokémon géré par Docker
-│
-├── README.md
-└── .gitignore
-```
+### Fonctionnalités principales
 
-## Choix technique
+Avec **BTP**, vous pourrez :
 
-Dans ce projet, nous avons fait le choix d’une architecture microservices qui permet non seulement de mieux organiser le code, mais aussi de faciliter les évolutions.  
-Les services communiquent à travers un API Gateway et chacun s’appuie sur une base de données PostgreSQL, choisie par une préférence de l'équipe.
+*   **Créer et gérer vos équipes** : Composez votre équipe de 6 Pokémon avec une interface drag & drop intuitive.
+*   **Explorer le Pokédex** : Recherchez parmi tous les Pokémon existants avec des filtres avancés (type, génération...).
+*   **Personnaliser vos stratégies** : Assignez les 4 attaques (moveset) idéales pour chaque membre de votre équipe.
+*   **Analyser vos synergies** : Visualisez en un coup d'œil les forces et faiblesses de votre équipe grâce à notre radar de types (couverture offensive et défensive).
+*   **Sauvegarder votre progression** : Créez un compte sécurisé pour retrouver vos équipes n'importe où.
 
-Tous les différents éléments sont conteneurisés avec Docker, ce qui assure un environnement reproductible sur toutes les machines, que ce soit en développement ou en production.
-
-### Au niveau des choix des technologies :
-
-La partie Frontend est réalisée en React avec TypeScript. L’utilisation de React nous permet de nous améliorer sur cette technologie très présente dans le monde du développement web, tandis que TypeScript renforce la rigueur du code, améliorant ainsi la lisibilité et la robustesse.
-
-Pour la partie Backend, nous la réalisons avec express.js, qui est simple à mettre en place et fonctionne très bien, ainsi que  
-TypeScript pour les mêmes raisons que le Frontend.
-
-## Dépendances
-
-Pour faciliter la production du projet nous utilisons des librairies telles que :
-
-- Axios pour les requêtes API
-- Lucide pour les icônes simples
-
-## Lancement du projet
+## 2. Lancement du projet
 
 ### Étape 1 :
 
@@ -73,37 +43,71 @@ Lancer la commande à la racine du projet
 
 ### Étape 3 :
 
-Aller dans la partie front du projet à l'aide de la commande
-
-```
-cd front
-```
-
-### Étape 4 :
-
-Exécuter l'installateur npm à l'aide de la commande
-
-```
-npm i
-```
-
-### Étape 5 :
-
-Lancer le rendu front avec
-
-```
-npm run dev
-```
-
-### Étape 6 :
-
-Sur Docker, aller dans les containers -> Sélectionner "api-gateway" -> Aller dans la section "port" et cliquer sur le lien
+Sur Docker, aller dans les containers -> Sélectionner "frontend" -> Aller dans la section "port" et cliquer sur le lien
 
 ### Et voilà !
 
 Vous avez lancé BTP ! Félicitations ! 😃
 
-## Notes
+## 3. Architecture
+
+### architecture du projet
+
+![alt text](images/architecture.png)
+
+### Architecture des fichiers
+
+```
+builder_team_pokemon/
+├── frontend/ # Application React
+│    ├── public/assets/images # Images
+│    │     ├── types/ # Pokemon Type icons
+│    └── src/
+│         ├── assets/
+│         │    ├── components/ # Composants frontend
+│         │    └── interfaces/ # Typescript Class
+│         │       ├── pokemon.tsx
+│         │       └── team.tsx
+│         ├── pages/
+│         │    ├──authPage.tsx # Login page
+│         │    ├──userPage.tsx # Profile page
+│         │    └──teamPage.tsx # Home page
+│         └── App.tsx # Routing React
+│
+├── api-gateway/ # API Gateway
+│
+├── user-service/ # Microservice utilisateur géré par Docker
+│
+├── team-service/ # Microservice team Pokémon géré par Docker
+│
+├── pokeAPI-service/ # Microservice géré par Docker de requete externe vers pokeAPI
+│
+├── README.md
+└── .gitignore
+```
+
+## 4. Choix technique
+
+Dans ce projet, nous avons fait le choix d’une architecture microservices qui permet non seulement de mieux organiser le code, mais aussi de faciliter les évolutions.  
+Les services communiquent à travers un API Gateway et chacun s’appuie sur une base de données PostgreSQL, choisie par une préférence de l'équipe, à l'exception de pokeApi service qui communique avec l'api open source PokeAPI.
+
+Tous les différents éléments sont conteneurisés avec Docker, ce qui assure un environnement reproductible sur toutes les machines, que ce soit en développement ou en production.
+
+### Au niveau des choix des technologies :
+
+La partie Frontend est réalisée en React avec TypeScript. L’utilisation de React nous permet de nous améliorer sur cette technologie très présente dans le monde du développement web, tandis que TypeScript renforce la rigueur du code, améliorant ainsi la lisibilité et la robustesse.
+
+Pour la partie Backend, nous la réalisons avec express.js, qui est simple à mettre en place et fonctionne très bien, ainsi que  
+TypeScript pour les mêmes raisons que le Frontend.
+
+## 5. Dépendances
+
+Pour faciliter la production du projet nous utilisons des librairies telles que :
+
+- Axios pour les requêtes API
+- Lucide pour les icônes simples
+
+## 6. Notes
 
 ### Autres commandes
 

@@ -3,7 +3,7 @@ import * as moveService from '../services/move';
 
 export const getMovesByPokemon = async (req: Request, res: Response) => {
   try {
-    const moves = await moveService.getMovesByPokemon(req.params.id);
+    const moves = await moveService.getMovesByPokemon(req.params.id as string);
     res.json(moves);
   } catch (error) {
     console.error('Error in getMovesByPokemon: ', error);
