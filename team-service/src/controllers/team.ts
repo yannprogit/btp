@@ -15,7 +15,7 @@ export const getTeamsByUser = async (req: Request, res: Response) => {
 
 export const getTeamById = async (req: Request, res: Response) => {
   try {
-    const team = await teamService.getTeamById(req.params.id);
+    const team = await teamService.getTeamById(req.params.id as string);
     if (!team) res.status(404).json({ message: 'Team not found' });
     res.json(team);
   } catch (error) {
@@ -43,7 +43,7 @@ export const createTeam = async (req: Request, res: Response) => {
 
 export const updateTeam = async (req: Request, res: Response) => {
   console.log("request = ", req)
-  const { id } = req.params;
+  const id = req.params.id as string;
   const { name, pokemons } = req.body;
   console.log("pokemons =" ,pokemons)
 
@@ -65,7 +65,7 @@ export const updateTeam = async (req: Request, res: Response) => {
 
 export const deleteTeam = async (req: Request, res: Response) => {
   try {
-    const success = await teamService.deleteTeam(req.params.id);
+    const success = await teamService.deleteTeam(req.params.id as string);
     if (!success) { 
       res.status(404).json({ message: 'Team not found' });
     }

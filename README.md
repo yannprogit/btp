@@ -1,10 +1,55 @@
 # 🦖 Builder Team Pokemon
 
-## Presentation
+## Sommaire
 
-**Builder Team Pokemon** (BTP) est, comme son nom l’indique, un gestionnaire d'équipe Pokémon ergonomique et intuitif qui permet de créer efficacement ses équipes Pokémon.
+1.  [Presentation](#1-presentation)
+2.  [Lancement du projet](#2-lancement-du-projet)
+3.  [Architecture](#3-architecture)
+4.  [Choix technique](#4-choix-technique)
+5.  [Dépendances](#5-dépendances)
+6.  [Notes](#6-notes)
 
-## Architecture
+## 1. Presentation
+
+**Builder Team Pokemon** (BTP) est une solution moderne de gestion d'équipe Pokémon.
+
+Le projet est né d'un constat simple : la plupart des gestionnaires d'équipe existants, bien que fonctionnels, manquent souvent d'ergonomie et d'une interface soignée. 
+
+Notre objectif était donc de créer un outil qui allie l'utile à l'agréable, en proposant une expérience utilisateur fluide, intuitive et visuellement attractive pour construire efficacement ses équipes stratégiques.
+
+### Fonctionnalités principales
+
+Avec **BTP**, vous pourrez :
+
+*   **Créer et gérer vos équipes** : Composez votre équipe de 6 Pokémon avec une interface drag & drop intuitive.
+*   **Explorer le Pokédex** : Recherchez parmi tous les Pokémon existants avec des filtres avancés (type, génération...).
+*   **Personnaliser vos stratégies** : Assignez les 4 attaques (moveset) idéales pour chaque membre de votre équipe.
+*   **Analyser vos synergies** : Visualisez en un coup d'œil les forces et faiblesses de votre équipe grâce à notre radar de types (couverture offensive et défensive).
+*   **Sauvegarder votre progression** : Créez un compte sécurisé pour retrouver vos équipes n'importe où.
+
+## 2. Lancement du projet
+
+### Étape 1 :
+
+Démarrer Docker
+
+### Étape 2 :
+
+Lancer la commande à la racine du projet
+
+```
+.\start.bat
+```
+
+### Étape 3 :
+
+Sur Docker, aller dans les containers -> Sélectionner "frontend" -> Aller dans la section "port" et cliquer sur le lien
+
+### Et voilà !
+
+Vous avez lancé BTP ! Félicitations ! 😃
+
+## 3. Architecture
 
 ### architecture du projet
 
@@ -41,7 +86,7 @@ builder_team_pokemon/
 └── .gitignore
 ```
 
-## Choix technique
+## 4. Choix technique
 
 Dans ce projet, nous avons fait le choix d’une architecture microservices qui permet non seulement de mieux organiser le code, mais aussi de faciliter les évolutions.  
 Les services communiquent à travers un API Gateway et chacun s’appuie sur une base de données PostgreSQL, choisie par une préférence de l'équipe, à l'exception de pokeApi service qui communique avec l'api open source PokeAPI.
@@ -55,36 +100,14 @@ La partie Frontend est réalisée en React avec TypeScript. L’utilisation de R
 Pour la partie Backend, nous la réalisons avec express.js, qui est simple à mettre en place et fonctionne très bien, ainsi que  
 TypeScript pour les mêmes raisons que le Frontend.
 
-## Dépendances
+## 5. Dépendances
 
 Pour faciliter la production du projet nous utilisons des librairies telles que :
 
 - Axios pour les requêtes API
 - Lucide pour les icônes simples
 
-## Lancement du projet
-
-### Étape 1 :
-
-Démarrer Docker
-
-### Étape 2 :
-
-Lancer la commande à la racine du projet
-
-```
-.\start.bat
-```
-
-### Étape 3 :
-
-Sur Docker, aller dans les containers -> Sélectionner "frontend" -> Aller dans la section "port" et cliquer sur le lien
-
-### Et voilà !
-
-Vous avez lancé BTP ! Félicitations ! 😃
-
-## Notes
+## 6. Notes
 
 ### Autres commandes
 
