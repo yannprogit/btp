@@ -34,4 +34,13 @@ Le statut du ticket évolue dans le tableau de bord (Project) en fonction de l'a
 
 ## 3. Automatisation
 
-*(Section à venir)*
+Nous utilisons **Zapier** pour automatiser certaines tâches entre Notion et GitHub.
+
+### Fonctionnement actuel
+Lorsqu'un ticket est créé dans Notion, Zapier tente de créer automatiquement la branche correspondante sur GitHub.
+
+### Limitations connues
+*   **Décalage de ticket** : Actuellement, l'automatisation a un bug qui fait qu'elle traite parfois le ticket précédent au lieu du nouveau ticket qui vient d'être créé.
+*   **Type de branche unique** : L'automatisation crée systématiquement des branches de type `feat/`.
+    *   *Amélioration idéale* : Il faudrait ajouter un tag "Fix" ou "Feature" dans Notion pour permettre à Zapier de choisir le bon préfixe (`fix/` ou `feat/`).
+    *   *Raison* : La complexité d'implémentation d'une telle logique conditionnelle est disproportionnée par rapport aux besoins du projet. De plus, une solution robuste nécessiterait l'accès aux fonctionnalités avancées (payantes) de l'outil.
