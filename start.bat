@@ -1,33 +1,30 @@
 @echo off
-echo Stopping API Gateway
-cd api-gateway
-docker-compose down
-docker rmi api-gateway-api_gateway
-cd ..
+docker network create --driver bridge btp-network
 
-echo Stopping team service
-cd team-service
-docker-compose down
-docker rmi team-service-team-app
-cd ..
-
-echo Stopping user service
+echo Launching user service
 cd user-service
-docker-compose down
-docker rmi user-service-user-app
+docker-compose up -d
 cd ..
 
-echo Stopping pokeapi service
+echo Launching team service
+cd team-service
+docker-compose up -d
+cd ..
+
+echo Launching pokeapi service
 cd pokeapi-service
-docker-compose down
-docker rmi pokeapi-service-pokeapi-app
+docker-compose up -d
 cd ..
 
-echo Stopping frontend
+echo Launching API Gateway
+cd api-gateway
+docker-compose up -d
+cd ..
+
+echo Launching Frontend
 cd frontend
-docker-compose down
-docker rmi frontend-front-app
+docker-compose up -d
 cd ..
 
-echo Application stopped !
+echo That's finish !
 pause
