@@ -28,9 +28,10 @@ app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
-
-router.use('/api-docs', swaggerUI.serve);
-router.get('/api-docs', swaggerUI.setup(swaggerSpec));
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.path.startsWith('/api-docs')) return next();
+  return authMiddleware(req, res, next);
+});
 
 router.use('/', teamRoutes);
 
