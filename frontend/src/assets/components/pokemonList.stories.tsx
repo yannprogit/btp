@@ -1,7 +1,7 @@
 // PokemonList.stories.tsx
 import type { Meta, Story } from "@ladle/react";
 import { http, HttpResponse } from "msw";
-import PokemonList from "./PokemonList";
+import PokemonList from "./pokemonList";
 import type { Pokemon } from "../interfaces/pokemon";
 
 initialize();

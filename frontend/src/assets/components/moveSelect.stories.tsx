@@ -1,6 +1,6 @@
 // MoveSelect.stories.tsx
 import type { Meta, Story } from "@ladle/react";
-import MoveSelect from "./MoveSelect";
+import MoveSelect from "./moveSelect";
 import type { Move } from "../interfaces/pokemon";
 
 export default {
