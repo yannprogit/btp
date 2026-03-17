@@ -1,6 +1,6 @@
 // ConfirmModal.stories.tsx
 import type { Meta, Story } from "@ladle/react";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmModal from "./confirmModal";
 
 export default {
   title: "Components/ConfirmModal",

@@ -1,7 +1,7 @@
 // Header.stories.tsx
 import type { Meta, Story } from "@ladle/react";
 import { MemoryRouter } from "react-router-dom";
-import Header from "./Header";
+import Header from "./header";
 
 export default {
   title: "Components/Header",

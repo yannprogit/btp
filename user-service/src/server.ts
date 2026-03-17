@@ -12,9 +12,8 @@ import authRoutes from './routes/auth';
 import { swaggerSpec } from './config/swagger';
 
 const app: Express = express();
-const router = app.router;
 const port = process.env.API_PORT || 5555;
-console.log("router user = ",router);
+
 setupLogging(app);
 
 app.use(cors());
@@ -25,16 +24,18 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+// Swagger Documentation
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
+// Routes
+app.use('/', userRoutes);
+app.use('/auth', authRoutes);
+
+// Error Handler
 app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
-
-router.use('/api-docs', swaggerUI.serve);
-router.get('/api-docs', swaggerUI.setup(swaggerSpec));
-
-router.use('/', userRoutes);
-router.use('/auth', authRoutes);
 
 const startServer = async () => {
   await initDB();

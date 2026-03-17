@@ -1,7 +1,7 @@
 // TeamCard.stories.tsx
 import type { Meta, Story } from "@ladle/react";
 import { http, HttpResponse } from "msw";
-import TeamCard from "./TeamCard";
+import TeamCard from "./teamCard";
 import type { PokemonInTeam, Move } from "../interfaces/pokemon";
 
 export default {
