@@ -1,41 +1,7 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import app from './app';
 import { initDB } from './init/initDB';
 
-
-import express, { Express, Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import swaggerUI from 'swagger-ui-express';
-import { setupLogging } from './logging';
-import userRoutes from './routes/user';
-import authRoutes from './routes/auth';
-import { swaggerSpec } from './config/swagger';
-
-const app: Express = express();
 const port = process.env.API_PORT || 5555;
-
-setupLogging(app);
-
-app.use(cors());
-app.use(express.json());
-
-app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log(`Received request: ${req.method} ${req.originalUrl}`);
-  next();
-});
-
-// Swagger Documentation
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-
-// Routes
-app.use('/', userRoutes);
-app.use('/auth', authRoutes);
-
-// Error Handler
-app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
 
 const startServer = async () => {
   await initDB();

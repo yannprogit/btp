@@ -49,6 +49,15 @@ Sur Docker, aller dans les containers -> Sélectionner "frontend" -> Aller dans 
 
 Vous avez lancé BTP ! Félicitations ! 😃
 
+### Accès aux documentations
+
+Une fois le projet lancé, vous avez accès aux outils suivants :
+
+- **Storybook (Ladle)** : [http://localhost:61000](http://localhost:61000) - Bibliothèque des composants UI
+- **User Service Swagger** : [http://localhost:5555/api-docs](http://localhost:5555/api-docs) - Documentation de l'API Utilisateurs
+- **Team Service Swagger** : [http://localhost:5050/api-docs](http://localhost:5050/api-docs) - Documentation de l'API Équipes
+- **PokeAPI Service Swagger** : [http://localhost:6000/api-docs](http://localhost:6000/api-docs) - Documentation du wrapper PokeAPI
+
 ## 3. Architecture
 
 ### architecture du projet
