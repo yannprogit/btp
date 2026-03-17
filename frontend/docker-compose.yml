@@ -6,12 +6,43 @@ services:
     container_name: frontend
     ports:
       - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.2'
+          memory: 128M
+    networks:
+      - btp-network
+
+  ladle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend-ladle
+    command: npx ladle serve --host 0.0.0.0 --port 61000
+    ports:
       - "61000:61000"
     volumes:
       - .:/app
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.2'
+          memory: 128M
     networks:
       - btp-network
 

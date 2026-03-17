@@ -11,8 +11,16 @@ services:
       - btp-network
     depends_on:
       - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
   db:
-    image: postgres
+    image: postgres:16-alpine
     container_name: team_pgdb
     restart: always
     ports:
@@ -21,6 +29,14 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.2'
+          memory: 128M
     volumes:
       - local_pgdata:/var/lib/postgresql/data
     networks:
@@ -34,6 +50,14 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     networks:
