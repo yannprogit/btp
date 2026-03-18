@@ -6,9 +6,20 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(),tailwindcss()],
   server: {
-  host: true,
-  strictPort: true,
-  port: 5173,
-  watch: { usePolling: true },
+    host: true,
+    strictPort: true,
+    port: 5173,
+    watch: {
+      usePolling: true,
+    },
+    hmr: {
+      clientPort: 5173,
+    },
+    watch: {
+      usePolling: true,
+    },
+  },
+  optimizeDeps: {
+    exclude: ['@ladle/react'],
   },
 })
