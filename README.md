@@ -98,7 +98,16 @@ builder_team_pokemon/
 ## 4. Choix technique
 
 Dans ce projet, nous avons fait le choix d’une architecture microservices qui permet non seulement de mieux organiser le code, mais aussi de faciliter les évolutions.  
-Les services communiquent à travers un API Gateway et chacun s’appuie sur une base de données PostgreSQL, choisie par une préférence de l'équipe, à l'exception de pokeApi service qui communique avec l'api open source PokeAPI.
+Les services communiquent à travers un API Gateway. Le service `pokeapi-service` agit comme un wrapper autour de l'API externe PokeAPI, tandis que les autres services s'appuient sur une base de données **PostgreSQL**.
+
+### Base de données et Persistance
+
+Côté données, nous avons choisi **PostgreSQL**. **Pas d'ORM** — nous écrivons du **SQL natif** (via le driver `pg`).
+
+**Pourquoi ce choix ?**
+PostgreSQL est robuste, ACID, et parfaitement adapté à nos données structurées. Le fait de ne pas utiliser d'ORM nous donne un **contrôle total** sur nos requêtes et nos performances.
+
+Notre schéma est **purement relationnel** et tourne autour de tables principales : `users`, `teams`, `pokemon`, et `moves`. Les relations (comme la composition d'une équipe ou les attaques d'un Pokémon) sont gérées par des tables de jointure (`contain`, `owned`), garantissant l'intégrité des données sans recourir au stockage JSON.
 
 Tous les différents éléments sont conteneurisés avec Docker, ce qui assure un environnement reproductible sur toutes les machines, que ce soit en développement ou en production.
 

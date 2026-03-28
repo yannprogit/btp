@@ -1,0 +1,111 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  test-pokeapi-service:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pokeapi-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Run tests
+        run: npm test -- --runInBand
+
+  test-team-service:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: team-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Run tests
+        run: npm test -- --runInBand
+
+  test-user-service:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: user-service
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Run tests
+        run: npm test -- --runInBand
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Run frontend tests
+        run: npm run test:run

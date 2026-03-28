@@ -6,6 +6,7 @@ export const signup = async (req: Request, res: Response) => {
 
   if (!email || !password || !name) {
     res.status(400).json({ message: 'Missing fields' });
+    return;
   }
 
   try {
@@ -13,12 +14,15 @@ export const signup = async (req: Request, res: Response) => {
 
     if (!result) {
       res.status(409).json({ message: 'User already exists' });
+      return;
     }
 
     res.status(201).json(result);
+    return;
   } catch (error) {
     console.error('Error in signup: ', error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 };
 
@@ -27,6 +31,7 @@ export const login = async (req: Request, res: Response) => {
 
   if (!email || !password) {
     res.status(400).json({ message: 'Missing credentials' });
+    return;
   }
 
   try {
@@ -34,12 +39,15 @@ export const login = async (req: Request, res: Response) => {
 
     if (!result) {
       res.status(401).json({ message: 'Invalid credentials' });
+      return;
     }
 
     res.json(result);
+    return;
   } catch (error) {
     console.error('Error in login: ', error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 
 };
