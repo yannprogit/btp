@@ -7,7 +7,8 @@
 3.  [Architecture](#3-architecture)
 4.  [Choix technique](#4-choix-technique)
 5.  [Dépendances](#5-dépendances)
-6.  [Notes](#6-notes)
+6.  [Migrations et Reverts](#6-migrations-et-reverts)
+7.  [Notes](#7-notes)
 
 ## 1. Presentation
 
@@ -125,7 +126,52 @@ Pour faciliter la production du projet nous utilisons des librairies telles que 
 - Axios pour les requêtes API
 - Lucide pour les icônes simples
 
-## 6. Notes
+## 6. Migrations et Reverts
+
+### Principe
+
+Chaque service gère ses migrations dans son propre dossier :
+
+- `team-service/migrations`
+- `user-service/migrations`
+
+Chaque migration a un fichier `up` et un fichier `down` :
+
+- `001_...sql` pour appliquer
+- `001_....down.sql` pour revert
+
+Les migrations appliquées sont tracées dans la table `schema_migrations` de chaque base.
+
+### Ciblage (même logique pour migrations et reverts)
+
+Les scripts acceptent un argument optionnel :
+
+- sans argument : cible la dernière migration en attente (migrations) ou la dernière appliquée (reverts)
+- `all` : cible toutes les migrations concernées
+- `001`, `002`, etc. : cible une migration précise par identifiant
+
+Exemples :
+
+```bash
+.\runMigrationsTeam.bat
+.\runMigrationsTeam.bat all
+.\runMigrationsTeam.bat 001
+
+.\runRevertTeam.bat
+.\runRevertTeam.bat all
+.\runRevertTeam.bat 001
+```
+
+### Scripts disponibles à la racine
+
+Scripts ciblés par service :
+
+- `runMigrationsTeam.bat`
+- `runMigrationsUser.bat`
+- `runRevertTeam.bat`
+- `runRevertUser.bat`
+
+## 7. Notes
 
 ### Autres commandes
 

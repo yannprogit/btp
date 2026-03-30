@@ -9,6 +9,10 @@
     "dev": "npx nodemon",
     "preserve": "npm run build",
     "serve": "concurrently \"npx tsc -w\" \"npx nodemon dist/server.js\" ",
+    "migrate": "npm run build && node dist/init/runMigrations.js",
+    "migrate:dev": "npx ts-node src/init/runMigrations.ts",
+    "migrate:revert": "npm run build && node dist/init/runReverts.js",
+    "migrate:revert:dev": "npx ts-node src/init/runReverts.ts",
     "test": "jest",
     "test:unit": "jest tests/unit",
     "test:e2e": "jest tests/e2e"
