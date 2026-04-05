@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PokemonList from "../assets/components/pokemonList";
 import Header from "../assets/components/header";
 import TeamCard from "../assets/components/teamCard";
@@ -24,7 +24,7 @@ const TeamPage = () => {
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("token");
 
-  const fetchTeams = async () => {
+  const fetchTeams = useCallback(async () => {
     try {
       if (!token) return;
       const response = await axios.get("http://localhost:5000/teams", {
@@ -40,7 +40,7 @@ const TeamPage = () => {
         console.error("Erreur lors du chargement des équipes :", error);
       }
     }
-  };
+  }, [token]);
 
   const handleAddToTeam = (pokemon: Pokemon) => {
     if (team.length >= 6) return;
@@ -96,7 +96,7 @@ const TeamPage = () => {
         ? `http://localhost:5000/teams/${selectedTeamId}`
         : "http://localhost:5000/teams";
       const method = selectedTeamId ? axios.put : axios.post;
-      const response = await method(url, teamData, {
+      await method(url, teamData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

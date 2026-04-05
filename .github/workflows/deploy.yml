@@ -1,0 +1,275 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - '**'
+
+env:
+  REGISTRY: docker.io
+
+jobs:
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Lint frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run lint
+
+      - name: Lint api-gateway
+        run: |
+          cd api-gateway
+          npm ci
+          npm run lint
+
+      - name: Lint pokeapi-service
+        run: |
+          cd pokeapi-service
+          npm ci
+          npm run lint
+
+      - name: Lint team-service
+        run: |
+          cd team-service
+          npm ci
+          npm run lint
+
+      - name: Lint user-service
+        run: |
+          cd user-service
+          npm ci
+          npm run lint
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Test pokeapi-service
+        run: |
+          cd pokeapi-service
+          npm ci
+          npm test -- --runInBand
+
+      - name: Test team-service
+        run: |
+          cd team-service
+          npm ci
+          npm test -- --runInBand
+
+      - name: Test user-service
+        run: |
+          cd user-service
+          npm ci
+          npm test -- --runInBand
+
+      - name: Test frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run test:run
+
+  build:
+    name: Build Docker Images
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-frontend:latest
+
+      - name: Build and push api-gateway
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api-gateway
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-api-gateway:latest
+
+      - name: Build and push pokeapi-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./pokeapi-service
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-pokeapi-service:latest
+
+      - name: Build and push team-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./team-service
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-team-service:latest
+
+      - name: Build and push user-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./user-service
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-user-service:latest
+
+  # deploy-dev:
+  #   name: Deploy to DEV Environment
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/dev'
+  #   environment:
+  #     name: development
+  #     url: https://dev.example.com
+
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     - name: Deploy to DEV server
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.DEV_HOST }}
+  #         username: ${{ secrets.DEV_USERNAME }}
+  #         key: ${{ secrets.DEV_SSH_KEY }}
+  #         script: |
+  #           docker network create --driver bridge btp-network || true
+  #           echo "Pulling and launching user service"
+  #           docker pull ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-user-service:latest
+  #           cd user-service
+  #           docker-compose up -d
+  #           cd ..
+  #           echo "Pulling and launching team service"
+  #           docker pull ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-team-service:latest
+  #           cd team-service
+  #           docker-compose up -d
+  #           cd ..
+  #           echo "Pulling and launching pokeapi service"
+  #           docker pull ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-pokeapi-service:latest
+  #           cd pokeapi-service
+  #           docker-compose up -d
+  #           cd ..
+  #           echo "Pulling and launching API Gateway"
+  #           docker pull ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-api-gateway:latest
+  #           cd api-gateway
+  #           docker-compose up -d
+  #           cd ..
+  #           echo "Pulling and launching frontend"
+  #           docker pull ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/btp-frontend:latest
+  #           cd frontend
+  #           docker-compose up -d
+  #           cd ..
+  #         username: ${{ secrets.DEV_USER }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         script: |
+  #           cd /app
+  #           IMAGE_TAG="${{ needs.build.outputs.image-tag }}"
+  #           bash /app/deploy.sh "$IMAGE_TAG" dev
+
+  #     - name: Notify Slack (DEV deployed)
+  #       if: success()
+  #       uses: slackapi/slack-github-action@v1
+  #       with:
+  #         webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+  #         payload: |
+  #           {
+  #             "text": "✅ DEV deployed successfully",
+  #             "blocks": [
+  #               {
+  #                 "type": "section",
+  #                 "text": {
+  #                   "type": "mrkdwn",
+  #                   "text": "*DEV Deployment Successful* 🚀\nBranch: `dev`\nCommit: `${{ github.sha }}`"
+  #                 }
+  #               }
+  #             ]
+  #           }
+
+  # deploy-prod:
+    # name: Deploy to PROD Environment
+    # needs: build
+    # runs-on: ubuntu-latest
+    # if: github.ref == 'refs/heads/main'
+    # environment:
+    #   name: production
+    #   url: https://example.com
+    # concurrency:
+    #   group: prod-deployment
+    #   cancel-in-progress: false
+
+    # steps:
+    #   - uses: actions/checkout@v4
+
+    #   - name: Deploy to PROD server (Blue-Green)
+    #     uses: appleboy/ssh-action@master
+    #     with:
+    #       host: ${{ secrets.PROD_HOST }}
+    #       username: ${{ secrets.PROD_USER }}
+    #       key: ${{ secrets.SSH_PRIVATE_KEY }}
+    #       script: |
+    #         cd /app
+    #         IMAGE_TAG="${{ needs.build.outputs.image-tag }}"
+    #         bash /app/deploy.sh "$IMAGE_TAG" prod
+
+    #   - name: Notify Slack (PROD deployed)
+    #     if: success()
+    #     uses: slackapi/slack-github-action@v1
+    #     with:
+    #       webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+    #       payload: |
+    #         {
+    #           "text": "✅ PROD deployed successfully",
+    #           "blocks": [
+    #             {
+    #               "type": "section",
+    #               "text": {
+    #                 "type": "mrkdwn",
+    #                 "text": "*PROD Deployment Successful* 🚀\nBranch: `main`\nCommit: `${{ github.sha }}`"
+    #               }
+    #             }
+    #           ]
+    #         }
+
+    #   - name: Notify Slack (Deployment failed)
+    #     if: failure()
+    #     uses: slackapi/slack-github-action@v1
+    #     with:
+    #       webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+    #       payload: |
+    #         {
+    #           "text": "❌ PROD deployment failed",
+    #           "blocks": [
+    #             {
+    #               "type": "section",
+    #               "text": {
+    #                 "type": "mrkdwn",
+    #                 "text": "*PROD Deployment Failed* ⚠️\nBranch: `main`\nCommit: `${{ github.sha }}`\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>"
+    #               }
+    #             }
+    #           ]
+    #         }
