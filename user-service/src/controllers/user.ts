@@ -5,20 +5,27 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await userService.getAllUsers();
     res.json(users);
+    return;
   } catch (error) {
     console.error('Error in getUsers: ', error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 };
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
     const user = await userService.getUserById(req.params.id as string);
-    if (!user) res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
     res.json(user);
+    return;
   } catch (error) {
     console.error('Error in getUserById: ', error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 
 };
@@ -31,12 +38,15 @@ export const getMe = async (req: Request, res: Response) => {
 
     if (!user) {
       res.status(404).json({ message: 'User not found' });
+      return;
     }
 
     res.json(user);
+    return;
   } catch (error) {
     console.error('Error in getMe: ', error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 };
 
@@ -44,14 +54,17 @@ export const createUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
   if (!email || !name || !password) {
     res.status(400).json({ message: 'Fields are missing' });
+    return;
   }
 
   try {
     const newUser = await userService.createUser({ name, email, password });
     res.status(201).json(newUser);
+    return;
   } catch (error) {
     console.error('Error in createUser: ', error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 };
 
@@ -60,10 +73,12 @@ export const updateUser = async (req: Request, res: Response) => {
 
   if (!currentPassword) {
     res.status(400).json({ message: 'Current password is required' });
+    return;
   }
 
   if (!name && !email && !newPassword) {
     res.status(400).json({ message: 'At least one field (name, email, newPassword) is required' });
+    return;
   }
 
   try {
@@ -76,12 +91,15 @@ export const updateUser = async (req: Request, res: Response) => {
 
     if (!success) {
       res.status(403).json({ message: 'Invalid credentials' });
+      return;
     }
 
     res.status(204).send();
+    return;
   } catch (error) {
     console.error('Error in updateUser: ', error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 };
 
@@ -92,11 +110,14 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     if (!success) { 
       res.status(404).json({ message: 'User not found' });
+      return;
     }
     res.status(204).send();
+    return;
   } catch (error) {
     console.error('Error in deleteUser: ', error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 
 };

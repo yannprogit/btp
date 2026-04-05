@@ -9,9 +9,6 @@ export default defineConfig({
     host: true,
     strictPort: true,
     port: 5173,
-    watch: {
-      usePolling: true,
-    },
     hmr: {
       clientPort: 5173,
     },
@@ -21,5 +18,11 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['@ladle/react'],
+  },
+  test: {
+    environment: 'jsdom',
+    globals: false,
+    setupFiles: './src/test/setupTests.ts',
+    css: true,
   },
 })

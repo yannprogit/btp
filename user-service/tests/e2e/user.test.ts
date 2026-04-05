@@ -15,6 +15,10 @@ describe('User Service E2E (Mocked DB)', () => {
         token = signToken({ id: 1, email: 'test@example.com' });
     });
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('GET / should return a list of users', async () => {
         const mockUsers = [
             { id: 1, name: 'Alice', email: 'alice@example.com' },
@@ -37,6 +41,15 @@ describe('User Service E2E (Mocked DB)', () => {
         expect(response.status).toBe(401);
     });
 
+    it('GET / should reject invalid token', async () => {
+        const response = await request(app)
+            .get('/')
+            .set('Authorization', 'Bearer invalid-token');
+
+        expect(response.status).toBe(401);
+        expect(response.body).toEqual({ message: 'Invalid token' });
+    });
+
     it('GET /users/me should return current user profile', async () => {
         const mockUser = { id: 1, name: 'Alice', email: 'alice@example.com' };
         
@@ -48,5 +61,114 @@ describe('User Service E2E (Mocked DB)', () => {
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockUser);
+    });
+
+    it('GET /me should return 404 when profile is missing', async () => {
+        (userService.getUserById as jest.Mock).mockResolvedValue(null);
+
+        const response = await request(app)
+            .get('/me')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ message: 'User not found' });
+    });
+
+    it('GET /:id should return user by id', async () => {
+        const mockUser = { id: 2, name: 'Bob', email: 'bob@example.com' };
+        (userService.getUserById as jest.Mock).mockResolvedValue(mockUser);
+
+        const response = await request(app)
+            .get('/2')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(mockUser);
+    });
+
+    it('GET /:id should return 404 when user is not found', async () => {
+        (userService.getUserById as jest.Mock).mockResolvedValue(null);
+
+        const response = await request(app)
+            .get('/404')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ message: 'User not found' });
+    });
+
+    it('POST / should create user', async () => {
+        const created = { id: 3, name: 'Charlie', email: 'charlie@example.com' };
+        (userService.createUser as jest.Mock).mockResolvedValue(created);
+
+        const response = await request(app)
+            .post('/')
+            .send({ name: 'Charlie', email: 'charlie@example.com', password: 'pwd' });
+
+        expect(response.status).toBe(201);
+        expect(response.body).toEqual(created);
+    });
+
+    it('POST / should return 400 when fields are missing', async () => {
+        const response = await request(app)
+            .post('/')
+            .send({ email: 'charlie@example.com' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ message: 'Fields are missing' });
+    });
+
+    it('PUT /:id should return 204 when update succeeds', async () => {
+        (userService.updateUser as jest.Mock).mockResolvedValue(true);
+
+        const response = await request(app)
+            .put('/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'New Name', currentPassword: 'pwd' });
+
+        expect(response.status).toBe(204);
+    });
+
+    it('PUT /:id should return 400 when current password is missing', async () => {
+        const response = await request(app)
+            .put('/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'New Name' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ message: 'Current password is required' });
+    });
+
+    it('PUT /:id should return 403 for invalid credentials', async () => {
+        (userService.updateUser as jest.Mock).mockResolvedValue(false);
+
+        const response = await request(app)
+            .put('/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'New Name', currentPassword: 'wrong' });
+
+        expect(response.status).toBe(403);
+        expect(response.body).toEqual({ message: 'Invalid credentials' });
+    });
+
+    it('DELETE /:id should return 204 on success', async () => {
+        (userService.deleteUser as jest.Mock).mockResolvedValue(true);
+
+        const response = await request(app)
+            .delete('/1')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(204);
+    });
+
+    it('DELETE /:id should return 404 when user does not exist', async () => {
+        (userService.deleteUser as jest.Mock).mockResolvedValue(false);
+
+        const response = await request(app)
+            .delete('/404')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ message: 'User not found' });
     });
 });
