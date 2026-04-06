@@ -130,3 +130,5 @@ dist
 
 # pgadmin folders
 user-service/pgadmin/
+
+.env

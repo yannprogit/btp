@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 
 export const getAllUsers = async (): Promise<User[]> => {
   try {
-    const result = await database.query('SELECT id, name, email FROM users');
+    const result = await database.query('SELECT id, name, email, role FROM users');
     return result.rows as User[];
   } catch (err) {
     console.error('Get all users error: ', err);
@@ -13,17 +13,17 @@ export const getAllUsers = async (): Promise<User[]> => {
 };
 
 export const getUserById = async (id: string): Promise<User | null> => {
-  const result = await database.query('SELECT id, name, email FROM users WHERE id = $1', [id]);
+  const result = await database.query('SELECT id, name, email, role FROM users WHERE id = $1', [id]);
   return result.rows[0] || null;
 };
 
-export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
+export const createUser = async (user: Omit<User, 'id' | 'role'>): Promise<User> => {
   const hashed = await bcrypt.hash(user.password, 10);
   const result = await database.query(
-    `INSERT INTO users (name, email, password)
+    `INSERT INTO users (name, email, password, role)
     VALUES ($1, $2, $3)
-    RETURNING id, name, email`,
-    [user.name, user.email, hashed]
+    RETURNING id, name, email, role`,
+    [user.name, user.email, hashed, 'user']
   );
   return result.rows[0];
 };
