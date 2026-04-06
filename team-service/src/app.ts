@@ -7,6 +7,7 @@ import swaggerUI from 'swagger-ui-express';
 import { setupLogging } from './logging';
 import teamRoutes from './routes/team';
 import { swaggerSpec } from './config/swagger';
+import { errorHandler, notFoundHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
 
@@ -23,11 +24,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 app.use('/', teamRoutes);
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
