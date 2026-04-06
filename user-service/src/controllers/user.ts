@@ -1,59 +1,62 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as userService from '../services/user';
+import { AppError } from '../utils/errors';
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users = await userService.getAllUsers();
     res.json(users);
     return;
   } catch (error) {
-    console.error('Error in getUsers: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
     return;
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await userService.getUserById(req.params.id as string);
     if (!user) {
-      res.status(404).json({ message: 'User not found' });
+      next(new AppError('User not found', 404));
       return;
     }
     res.json(user);
     return;
   } catch (error) {
-    console.error('Error in getUserById: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
     return;
   }
 
 };
 
-export const getMe = async (req: Request, res: Response) => {
+export const getMe = async (req: Request, res: Response, next: NextFunction) => {
   const userId = (req as any).user?.id;
+
+  if (!userId) {
+    next(new AppError('Unauthorized', 401));
+    return;
+  }
 
   try {
     const user = await userService.getUserById(userId);
 
     if (!user) {
-      res.status(404).json({ message: 'User not found' });
+      next(new AppError('User not found', 404));
       return;
     }
 
     res.json(user);
     return;
   } catch (error) {
-    console.error('Error in getMe: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
     return;
   }
 };
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
   if (!email || !name || !password) {
-    res.status(400).json({ message: 'Fields are missing' });
+    next(new AppError('Fields are missing', 400));
     return;
   }
 
@@ -62,22 +65,21 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(201).json(newUser);
     return;
   } catch (error) {
-    console.error('Error in createUser: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
     return;
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, newPassword, currentPassword } = req.body;
 
   if (!currentPassword) {
-    res.status(400).json({ message: 'Current password is required' });
+    next(new AppError('Current password is required', 400));
     return;
   }
 
   if (!name && !email && !newPassword) {
-    res.status(400).json({ message: 'At least one field (name, email, newPassword) is required' });
+    next(new AppError('At least one field (name, email, newPassword) is required', 400));
     return;
   }
 
@@ -90,33 +92,31 @@ export const updateUser = async (req: Request, res: Response) => {
     });
 
     if (!success) {
-      res.status(403).json({ message: 'Invalid credentials' });
+      next(new AppError('Invalid credentials', 403));
       return;
     }
 
     res.status(204).send();
     return;
   } catch (error) {
-    console.error('Error in updateUser: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
     return;
   }
 };
 
 
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const success = await userService.deleteUser(req.params.id as string);
 
-    if (!success) { 
-      res.status(404).json({ message: 'User not found' });
+    if (!success) {
+      next(new AppError('User not found', 404));
       return;
     }
     res.status(204).send();
     return;
   } catch (error) {
-    console.error('Error in deleteUser: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
     return;
   }
 

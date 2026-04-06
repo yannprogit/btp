@@ -4,28 +4,23 @@ import bcrypt from 'bcrypt';
 import pool from '../config/db';
 
 export const signup = async ({ name, email, password }: Omit<User, 'id' | 'role'>) => {
-  try {
-    const existEmail = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (existEmail.rows.length > 0) {
-      return null;
-    } 
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const result = await pool.query(
-      'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role',
-      [name, email, hashedPassword, 'user']
-    );
-
-    const user = result.rows[0];
-
-    const token = signToken({ id: user.id, email: user.email });
-
-    return { token, user };
-  } catch (err) {
-    console.error("Signup error: ", err);
+  const existEmail = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+  if (existEmail.rows.length > 0) {
     return null;
   }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const result = await pool.query(
+    'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role',
+    [name, email, hashedPassword, 'user']
+  );
+
+  const user = result.rows[0];
+
+  const token = signToken({ id: user.id, email: user.email });
+
+  return { token, user };
 };
 
 export const login = async (email: string, password: string) => {

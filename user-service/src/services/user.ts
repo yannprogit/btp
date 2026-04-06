@@ -3,13 +3,8 @@ import { User } from '../models/user';
 import bcrypt from 'bcrypt';
 
 export const getAllUsers = async (): Promise<User[]> => {
-  try {
-    const result = await database.query('SELECT id, name, email, role FROM users');
-    return result.rows as User[];
-  } catch (err) {
-    console.error('Get all users error: ', err);
-    return [];
-  }
+  const result = await database.query('SELECT id, name, email, role FROM users');
+  return result.rows as User[];
 };
 
 export const getUserById = async (id: string): Promise<User | null> => {
