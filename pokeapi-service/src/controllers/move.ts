@@ -1,12 +1,11 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as moveService from '../services/move';
 
-export const getMovesByPokemon = async (req: Request, res: Response) => {
+export const getMovesByPokemon = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const moves = await moveService.getMovesByPokemon(req.params.id as string);
     res.json(moves);
   } catch (error) {
-    console.error('Error in getMovesByPokemon: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
   }
 };

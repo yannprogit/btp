@@ -8,6 +8,7 @@ import { setupLogging } from './logging';
 import pokemonRoutes from './routes/pokemon';
 import moveRoutes from './routes/move';
 import { swaggerSpec } from './config/swagger';
+import { errorHandler, notFoundHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
 
@@ -26,10 +27,8 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use('/pokemons', pokemonRoutes);
 app.use('/moves', moveRoutes);
 
-app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 
 export default app;
