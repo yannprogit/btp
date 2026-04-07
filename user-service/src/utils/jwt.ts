@@ -1,7 +1,9 @@
+
 import jwt from 'jsonwebtoken';
 
 const SECRET = process.env.JWT_SECRET || 'seikret';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const signToken = (payload: object, expiresIn = '1h') => {
   return jwt.sign(payload, SECRET);
 };

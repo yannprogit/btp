@@ -27,6 +27,7 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
