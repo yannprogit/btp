@@ -14,7 +14,7 @@ export const getTeamsByUser = async (userId: string): Promise<Omit<Team, 'userId
   }));
 };
 
-export const getTeamById = async (teamId: string): Promise<Team> => {
+export const getTeamById = async (teamId: string): Promise<Team | null> => {
   const teamRes = await pool.query(
     `SELECT id, name, userId FROM teams WHERE id = $1`,
     [teamId]
@@ -22,7 +22,7 @@ export const getTeamById = async (teamId: string): Promise<Team> => {
   const team = teamRes.rows[0];
 
   if (!team) {
-    throw new Error("Team not found");
+    return null;
   }
 
   const pkmnRes = await pool.query(
@@ -149,15 +149,23 @@ export const createTeam = async (team: Omit<Team, 'id'>): Promise<Team> => {
     }
   }
 
-  return await getTeamById(createdTeam.id);
+  const created = await getTeamById(createdTeam.id);
+  if (!created) {
+    throw new Error('Created team not found after insert');
+  }
+
+  return created;
 };
 
 export const updateTeam = async (id: string, updates: { name: string, pokemons: Pokemon[]}): Promise<boolean> => {
-  console.log("team service udpate service =", updates.pokemons)
-  await pool.query(
+  const updateResult = await pool.query(
     `UPDATE teams SET name = $1 WHERE id = $2`,
     [updates.name, id]
   );
+
+  if ((updateResult.rowCount ?? 0) === 0) {
+    return false;
+  }
 
     const currentPkmnRes = await pool.query(
     'SELECT pkmnId FROM contain WHERE teamId = $1',

@@ -8,6 +8,7 @@ import { setupLogging } from './logging';
 import userRoutes from './routes/user';
 import authRoutes from './routes/auth';
 import { swaggerSpec } from './config/swagger';
+import { errorHandler, notFoundHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
 
@@ -26,11 +27,7 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

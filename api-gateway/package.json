@@ -10,6 +10,7 @@
     "preserve": "npm run build",
     "serve": "concurrently \"npx tsc -w\" \"npx nodemon dist/server.js\" ",
     "test": "jest",
+    "test:unit": "jest tests/unit",
     "test:e2e": "jest tests/e2e",
     "lint": "eslint src/**/*.ts"
   },

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { getMovesByPokemon } from '../../../src/controllers/move';
 import * as moveService from '../../../src/services/move';
 
@@ -21,6 +21,7 @@ describe('move controller', () => {
       json: jest.fn(),
       status: jest.fn().mockReturnThis()
     } as unknown as Response;
+    const next = jest.fn() as unknown as NextFunction;
 
     const payload = [
       {
@@ -35,14 +36,15 @@ describe('move controller', () => {
 
     (moveService.getMovesByPokemon as jest.Mock).mockResolvedValue(payload);
 
-    await getMovesByPokemon(req, res);
+    await getMovesByPokemon(req, res, next);
 
     expect(moveService.getMovesByPokemon).toHaveBeenCalledWith('1');
     expect(res.json).toHaveBeenCalledWith(payload);
     expect(res.status).not.toHaveBeenCalled();
+    expect(next).not.toHaveBeenCalled();
   });
 
-  it('should return 500 when service throws', async () => {
+  it('should forward error to next when service throws', async () => {
     const req = {
       params: { id: '1' }
     } as unknown as Request;
@@ -51,12 +53,15 @@ describe('move controller', () => {
       json: jest.fn(),
       status: jest.fn().mockReturnThis()
     } as unknown as Response;
+    const next = jest.fn() as unknown as NextFunction;
 
-    (moveService.getMovesByPokemon as jest.Mock).mockRejectedValue(new Error('service error'));
+    const serviceError = new Error('service error');
+    (moveService.getMovesByPokemon as jest.Mock).mockRejectedValue(serviceError);
 
-    await getMovesByPokemon(req, res);
+    await getMovesByPokemon(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+    expect(next).toHaveBeenCalledWith(serviceError);
+    expect(res.status).not.toHaveBeenCalled();
+    expect(res.json).not.toHaveBeenCalled();
   });
 });
