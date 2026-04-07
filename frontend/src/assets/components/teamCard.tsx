@@ -3,6 +3,8 @@ import MoveSelect from "./moveSelect";
 import { Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useIsDevelopmentMode } from "../../hooks/useIsDevelopmentMode";
+import { formatErrorMessage } from "../../utils/errorFormatter";
 
 type TeamCardProps = {
   pokemon: PokemonInTeam;
@@ -14,6 +16,7 @@ const TeamCard = ({ pokemon, onRemove, onChange }: TeamCardProps) => {
   const [name, setName] = useState(pokemon.name);
   const [moves, setMoves] = useState<string[]>(pokemon.moves?.map((m) => m.name) ?? ["", "", "", ""]);
   const [pokemonMoves, setPokemonMoves] = useState<Move[]>([]);
+  const { isDev } = useIsDevelopmentMode();
   useEffect(() => {
     setName(pokemon.name);
     setMoves(pokemon.moves?.map((m) => m.name) ?? ["", "", "", ""]);
@@ -29,15 +32,11 @@ const TeamCard = ({ pokemon, onRemove, onChange }: TeamCardProps) => {
         );
         setPokemonMoves(sortedMoves);
       } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          console.error(error.response?.data?.message || "Erreur de requête axios lors de la de la récupération des attaques");
-        } else {
-          console.error("Erreur lors du chargement des attaques.");
-        }
+        console.error(formatErrorMessage(error, isDev));
       }
     };
     fetchMoves();
-  }, [pokemon.id, pokemon]);
+  }, [pokemon.id, pokemon, isDev]);
 
   const handleMoveChange = (moveName: string, slot: number) => {
     const updated = [...moves];

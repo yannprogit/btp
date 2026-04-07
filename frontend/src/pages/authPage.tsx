@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useIsDevelopmentMode } from "../hooks/useIsDevelopmentMode";
+import { formatErrorMessage } from "../utils/errorFormatter";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,6 +13,7 @@ const AuthPage = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { isDev } = useIsDevelopmentMode();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -37,11 +40,7 @@ const AuthPage = () => {
 
       navigate("/");
     } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          setError(error.response?.data?.message || "Erreur lors de la requête");
-        } else {
-          setError("Erreur lors du chargement des attaques.");
-        }
+      setError(formatErrorMessage(error, isDev));
     }
   };
 

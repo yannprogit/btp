@@ -6,6 +6,9 @@ import axios from 'axios';
 import AuthPage from './authPage';
 
 vi.mock('axios');
+vi.mock('../hooks/useIsDevelopmentMode', () => ({
+  useIsDevelopmentMode: () => ({ isDev: true, error: null, isLoading: false }),
+}));
 
 const mockedAxios = vi.mocked(axios, true);
 

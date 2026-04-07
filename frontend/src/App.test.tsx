@@ -14,7 +14,18 @@ vi.mock('./pages/userPage', () => ({
   default: () => <div>User Page</div>
 }));
 
+vi.mock('./pages/testErrorPage', () => ({
+  default: () => <div>Test Error Page</div>
+}));
+
 describe('App routing', () => {
+  it('renders not found page on unknown route', () => {
+    window.history.pushState({}, '', '/missing');
+    render(<App />);
+
+    expect(screen.getByText('Page non trouvée')).toBeInTheDocument();
+  });
+
   it('renders team page on root route', () => {
     window.history.pushState({}, '', '/');
     render(<App />);

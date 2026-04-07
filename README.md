@@ -34,6 +34,8 @@ Avec **BTP**, vous pourrez :
 
 Démarrer Docker
 
+Le mode d'erreur est piloté par le fichier `.env` à la racine du projet. Mettez `NODE_ENV=dev` pour des réponses et logs détaillés, ou `NODE_ENV=prod` pour un mode minimal.
+
 ### Étape 2 :
 
 Lancer la commande à la racine du projet

@@ -8,6 +8,8 @@ import type { ExistingTeam } from "../assets/interfaces/team";
 import { v4 as uuidv4 } from "uuid";
 import { Trash2 } from "lucide-react";
 import axios from "axios";
+import { useIsDevelopmentMode } from "../hooks/useIsDevelopmentMode";
+import { formatErrorMessage } from "../utils/errorFormatter";
 
 type PokemonInTeamExtended = PokemonInTeam & {
   moves?: Move[];
@@ -18,11 +20,14 @@ type PokemonInTeamExtended = PokemonInTeam & {
 const TeamPage = () => {
   const [team, setTeam] = useState<PokemonInTeamExtended[]>([]);
   const [name, setName] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [existingTeams, setExistingTeams] = useState<ExistingTeam[]>([]);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("token");
+  const { isDev } = useIsDevelopmentMode();
 
   const fetchTeams = useCallback(async () => {
     try {
@@ -34,13 +39,9 @@ const TeamPage = () => {
       });
       setExistingTeams(response.data);
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.response?.data?.message || "Erreur de requête axios lors de la récupération des équipes");
-      } else {
-        console.error("Erreur lors du chargement des équipes :", error);
-      }
+      setError(formatErrorMessage(error, isDev));
     }
-  }, [token]);
+  }, [token, isDev]);
 
   const handleAddToTeam = (pokemon: Pokemon) => {
     if (team.length >= 6) return;
@@ -69,8 +70,11 @@ const TeamPage = () => {
   };
 
   const handleSaveTeam = async () => {
+    setError(null);
+    setSuccess(null);
+
     if (!name.trim()) {
-      alert("Le nom de l'équipe est requis pour enregistrer.");
+      setError("Le nom de l'équipe est requis pour enregistrer.");
       return;
     }
 
@@ -88,7 +92,7 @@ const TeamPage = () => {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Token non trouvé. Veuillez vous connecter.");
+      setError("Token non trouvé. Veuillez vous connecter.");
       return;
     }
     try {
@@ -102,15 +106,10 @@ const TeamPage = () => {
           "Content-Type": "application/json",
         },
       });
-      alert(`Équipe ${selectedTeamId ? "modifiée" : "enregistrée"} avec succès !`);
+      setSuccess(`Équipe ${selectedTeamId ? "modifiée" : "enregistrée"} avec succès !`);
       await fetchTeams();
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.response?.data?.message || "Erreur de requête axios lors de l'enregistrement de l'équipe");
-      } else {
-        console.error("Erreur lors de la sauvegarde :", error);
-        alert("Erreur lors de la sauvegarde de l'équipe.");
-      }
+      setError(formatErrorMessage(error, isDev));
     }
   };
 
@@ -120,6 +119,9 @@ const TeamPage = () => {
   };
 
   const confirmDelete = async () => {
+    setError(null);
+    setSuccess(null);
+
     if (!selectedTeamId || !token) return;
 
     try {
@@ -127,7 +129,7 @@ const TeamPage = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert("Équipe supprimée avec succès !");
+      setSuccess("Équipe supprimée avec succès !");
       setTeam([]);
       setName("");
       setSelectedTeamId(null);
@@ -138,11 +140,7 @@ const TeamPage = () => {
       });
       setExistingTeams(refreshed.data);
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.response?.data?.message || "Erreur lors de la suppression de l'équipe");
-      } else {
-        console.error("Erreur inconnue lors de la suppression.");
-      }
+      setError(formatErrorMessage(error, isDev));
     } finally {
       setShowModal(false);
     }
@@ -165,6 +163,8 @@ const TeamPage = () => {
         <p className="my-4 mx-8">
           Notre Team Builder Pokémon est un outil simple et visuel pour créer votre équipe idéale de 6 Pokémon. Sélectionnez vos Pokémon, personnalisés les et assurez-vous que votre équipe est bien équilibrée face aux différents types d’adversaires.
         </p>
+        {success && <p className="text-green-600 text-center mb-2">{success}</p>}
+        {error && <p className="text-red-600 text-center mb-2">{error}</p>}
         <div className="max-w-full mx-auto px-4 py-4">
           {token && (
             <div className="mb-4 flex justify-center">
@@ -172,6 +172,8 @@ const TeamPage = () => {
               <select
                 className="w-1/6 rounded-md py-1.5 px-2 ring-1 ring-inset ring-gray-400 ml-4"
                 onChange={async (e) => {
+                  setError(null);
+                  setSuccess(null);
                   const teamId = e.target.value;
                   setSelectedTeamId(teamId);
                   try {
@@ -190,14 +192,7 @@ const TeamPage = () => {
                       }))
                     );
                   } catch (error: unknown) {
-                    if (axios.isAxiosError(error)) {
-                      console.error(
-                        error.response?.data?.message ||
-                          "Erreur de requête axios lors de la récupération de l'équipe"
-                      );
-                    } else {
-                      console.error("Erreur chargement équipe :", error);
-                    }
+                    setError(formatErrorMessage(error, isDev));
                   }
                 }}
               >
