@@ -28,6 +28,7 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
+  void _next;
   const now = new Date().toISOString();
 
   if (err instanceof AppError) {

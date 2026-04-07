@@ -4,9 +4,11 @@ import TeamPage from "./pages/teamPage";
 import AuthPage from "./pages/authPage";
 import UserPage from "./pages/userPage";
 import NotFoundPage from "./pages/notFoundPage";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const App = () => {
   return (
+    <ErrorBoundary>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<TeamPage/>} />
@@ -15,6 +17,7 @@ const App = () => {
           <Route path="*" element={<NotFoundPage/>} />
         </Routes>
       </BrowserRouter>
+    </ErrorBoundary>
   );
 };
 
