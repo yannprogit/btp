@@ -46,7 +46,10 @@ function Header() {
           Builder Team Pokemon
         </h1>
       </a>
-      <nav>
+      <nav className="flex items-center gap-4">
+        <a href="/test-error" className="text-sm text-gray-600 hover:text-gray-900 hover:underline whitespace-nowrap">
+          Test erreurs
+        </a>
         {userName ? (
           <div className="relative" ref={menuRef}>
             <button

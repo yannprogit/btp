@@ -14,6 +14,10 @@ vi.mock('./pages/userPage', () => ({
   default: () => <div>User Page</div>
 }));
 
+vi.mock('./pages/testErrorPage', () => ({
+  default: () => <div>Test Error Page</div>
+}));
+
 describe('App routing', () => {
   it('renders not found page on unknown route', () => {
     window.history.pushState({}, '', '/missing');

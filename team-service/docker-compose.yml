@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: team_service
     restart: always
+    environment:
+      NODE_ENV: ${NODE_ENV:-dev}
     ports:
       - "${API_PORT}:5050"
     networks:

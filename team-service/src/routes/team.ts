@@ -50,6 +50,9 @@ const router = Router();
  */
 router.get('/', authMiddleware, teamController.getTeamsByUser);
 
+router.get('/debug/sql-error', teamController.debugSqlError);
+router.get('/debug/crash', teamController.debugCrash);
+
 /**
  * @openapi
  * /teams/{id}:

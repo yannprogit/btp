@@ -3,6 +3,8 @@ import ConfirmModal from "../assets/components/confirmModal";
 import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import axios from "axios";
+import { useIsDevelopmentMode } from "../hooks/useIsDevelopmentMode";
+import { formatErrorMessage } from "../utils/errorFormatter";
 
 const UserPage = () => {
   const [name, setName] = useState("");
@@ -16,6 +18,7 @@ const UserPage = () => {
   const storedToken = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
   const storedName = localStorage.getItem("userName");
+  const { isDev } = useIsDevelopmentMode();
   let userName: string = "";
   if (storedName !== null) {
     userName = storedName;
@@ -48,11 +51,7 @@ const UserPage = () => {
       navigate("/profile");
       setMessage("Informations mises à jour !");
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Erreur de requête axios lors de la modification de l'utilisateur");
-      } else {
-        setError("Erreur lors de la mise à jour.");
-      }
+      setError(formatErrorMessage(error, isDev));
     }
   };
 
@@ -79,11 +78,7 @@ const UserPage = () => {
       navigate("/profile");
       setMessage("Mot de passe mis à jour !");
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Erreur de requête axios lors de la modification de l'utilisateur");
-      } else {
-        setError("Erreur lors du changement de mot de passe.");
-      }
+      setError(formatErrorMessage(error, isDev));
     }
   };
 
@@ -104,11 +99,7 @@ const UserPage = () => {
       localStorage.removeItem("userName");
       navigate("/");
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Erreur de requête axios lors de la suppression de l'utilisateur");
-      } else {
-        setError( "Erreur lors de la suppression du compte.");
-      }
+      setError(formatErrorMessage(error, isDev));
     }
   };
 

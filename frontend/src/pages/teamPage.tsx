@@ -8,6 +8,8 @@ import type { ExistingTeam } from "../assets/interfaces/team";
 import { v4 as uuidv4 } from "uuid";
 import { Trash2 } from "lucide-react";
 import axios from "axios";
+import { useIsDevelopmentMode } from "../hooks/useIsDevelopmentMode";
+import { formatErrorMessage } from "../utils/errorFormatter";
 
 type PokemonInTeamExtended = PokemonInTeam & {
   moves?: Move[];
@@ -25,6 +27,7 @@ const TeamPage = () => {
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("token");
+  const { isDev } = useIsDevelopmentMode();
 
   const fetchTeams = useCallback(async () => {
     try {
@@ -36,13 +39,9 @@ const TeamPage = () => {
       });
       setExistingTeams(response.data);
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Erreur lors de la récupération des équipes.");
-      } else {
-        setError("Erreur lors du chargement des équipes.");
-      }
+      setError(formatErrorMessage(error, isDev));
     }
-  }, [token]);
+  }, [token, isDev]);
 
   const handleAddToTeam = (pokemon: Pokemon) => {
     if (team.length >= 6) return;
@@ -110,11 +109,7 @@ const TeamPage = () => {
       setSuccess(`Équipe ${selectedTeamId ? "modifiée" : "enregistrée"} avec succès !`);
       await fetchTeams();
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Erreur lors de l'enregistrement de l'équipe.");
-      } else {
-        setError("Erreur lors de la sauvegarde de l'équipe.");
-      }
+      setError(formatErrorMessage(error, isDev));
     }
   };
 
@@ -145,11 +140,7 @@ const TeamPage = () => {
       });
       setExistingTeams(refreshed.data);
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Erreur lors de la suppression de l'équipe.");
-      } else {
-        setError("Erreur inconnue lors de la suppression de l'équipe.");
-      }
+      setError(formatErrorMessage(error, isDev));
     } finally {
       setShowModal(false);
     }
@@ -201,11 +192,7 @@ const TeamPage = () => {
                       }))
                     );
                   } catch (error: unknown) {
-                    if (axios.isAxiosError(error)) {
-                      setError(error.response?.data?.message || "Erreur lors du chargement de l'équipe.");
-                    } else {
-                      setError("Erreur lors du chargement de l'équipe.");
-                    }
+                    setError(formatErrorMessage(error, isDev));
                   }
                 }}
               >

@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import * as teamService from '../services/team';
 import { AppError } from '../utils/errors';
+import pool from '../config/db';
+
+const isDevelopmentMode = () => ['dev', 'development'].includes((process.env.NODE_ENV ?? '').toLowerCase());
 
 export const getTeamsByUser = async (req: Request, res: Response, next: NextFunction) => {
   const userId = (req as any).user?.id;
@@ -93,4 +96,26 @@ export const deleteTeam = async (req: Request, res: Response, next: NextFunction
     next(error);
     return;
   }
+};
+
+export const debugSqlError = async (_req: Request, _res: Response, next: NextFunction) => {
+  if (!isDevelopmentMode()) {
+    next(new AppError('Route not found', 404));
+    return;
+  }
+
+  try {
+    await pool.query('SELECT * FROM table_that_does_not_exist_for_demo');
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const debugCrash = (_req: Request, _res: Response, _next: NextFunction) => {
+  if (!isDevelopmentMode()) {
+    _next(new AppError('Route not found', 404));
+    return;
+  }
+
+  throw new Error('Intentional backend crash for demo');
 };

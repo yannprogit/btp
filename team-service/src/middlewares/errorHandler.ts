@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { AppError, isPgLikeError } from '../utils/errors';
 
+const isDevelopmentMode = () => ['dev', 'development'].includes((process.env.NODE_ENV ?? '').toLowerCase());
+
 const mapDatabaseError = (code: string | undefined): { status: number; message: string } => {
   switch (code) {
     case '23505':
@@ -30,6 +32,7 @@ export const errorHandler = (
 ) => {
   void _next;
   const now = new Date().toISOString();
+  const developmentMode = isDevelopmentMode();
 
   if (err instanceof AppError) {
     console.error(
@@ -39,12 +42,13 @@ export const errorHandler = (
         route: `${req.method} ${req.originalUrl}`,
         statusCode: err.statusCode,
         message: err.message,
-        stack: err.stack
+        ...(developmentMode ? { stack: err.stack } : {})
       })
     );
 
     res.status(err.statusCode).json({
-      message: err.expose ? err.message : 'Internal server error'
+      message: developmentMode || err.expose ? err.message : 'Internal server error',
+      ...(developmentMode ? { stack: err.stack } : {})
     });
     return;
   }
@@ -59,15 +63,29 @@ export const errorHandler = (
         route: `${req.method} ${req.originalUrl}`,
         statusCode: mapped.status,
         message: mapped.message,
-        dbCode: err.code,
-        detail: err.detail,
-        constraint: err.constraint,
-        table: err.table,
-        stack: err.stack
+        ...(developmentMode
+          ? {
+              dbCode: err.code,
+              detail: err.detail,
+              constraint: err.constraint,
+              table: err.table,
+              stack: err.stack
+            }
+          : {})
       })
     );
 
-    res.status(mapped.status).json({ message: mapped.message });
+    res.status(mapped.status).json(
+      developmentMode
+        ? {
+            message: mapped.message,
+            dbCode: err.code,
+            detail: err.detail,
+            constraint: err.constraint,
+            table: err.table
+          }
+        : { message: mapped.message }
+    );
     return;
   }
 
@@ -80,9 +98,13 @@ export const errorHandler = (
       route: `${req.method} ${req.originalUrl}`,
       statusCode: 500,
       message: fallbackError.message,
-      stack: fallbackError.stack
+      ...(developmentMode ? { stack: fallbackError.stack } : {})
     })
   );
 
-  res.status(500).json({ message: 'Internal server error' });
+  res.status(500).json(
+    developmentMode
+      ? { message: fallbackError.message, stack: fallbackError.stack }
+      : { message: 'Internal server error' }
+  );
 };

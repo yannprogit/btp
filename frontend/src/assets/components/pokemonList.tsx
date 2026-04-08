@@ -2,6 +2,8 @@ import PokemonCard from "./pokemonCard";
 import type { Pokemon } from "../interfaces/pokemon";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useIsDevelopmentMode } from "../../hooks/useIsDevelopmentMode";
+import { formatErrorMessage } from "../../utils/errorFormatter";
 
 type PokemonListProps = {
   onSelect: (pkmn: Pokemon) => void;
@@ -12,6 +14,7 @@ const PokemonList = ({ onSelect }: PokemonListProps) => {
   const [error, setError] = useState<string | null>(null);
   const [offset, setOffset] = useState<number>(0);
   const [maxPage, setMaxPage] = useState<number>(0);
+  const { isDev } = useIsDevelopmentMode();
   const maxOffset = 1300;
   const page = Math.floor(offset / 20);
 
@@ -25,16 +28,12 @@ const PokemonList = ({ onSelect }: PokemonListProps) => {
         setPokemons(response.data.pokemons);
         setMaxPage(response.data.maxPage);
       } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          setError(error.response?.data?.message || "Erreur de requête axios lors de la récupération des pokémons");
-        } else {
-          setError("Erreur inconnue lors de la récupération des pokémons");
-        }
+        setError(formatErrorMessage(error, isDev));
       }
     };
 
     fetchPokemons();
-  }, [offset]);
+  }, [offset, isDev]);
 
   const handlePrev = () => {
     if (offset > 0) setOffset(offset - 20);
