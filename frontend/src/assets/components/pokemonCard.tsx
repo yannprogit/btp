@@ -41,11 +41,11 @@ const PokemonCard = ({
 
   return (
     <div
-      className="rounded-xl shadow p-4 cursor-pointer"
+      className="rounded-xl shadow p-4 cursor-pointer transition-all duration-200 hover:bg-gray-100 hover:shadow-lg hover:scale-[1.02]"
       onClick={onClick}
       style={{ background }}
     >
-      <img className="h-45 object-cover mx-auto" src={pokemon.sprite} alt={pokemon.name}/>
+      <img className="h-45 object-cover mx-auto transition-transform duration-200 hover:scale-105"src={pokemon.sprite} alt={pokemon.name}/>
       <div className="p-4">
         <p className="text-lg font-semibold text-gray-800 text-center">
           {pokemon.name}
